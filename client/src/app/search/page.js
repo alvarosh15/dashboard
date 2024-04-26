@@ -4,7 +4,11 @@ export default function Search() {
   let searchById = (e) => {
     e.preventDefault();
     let id = e.target[0].value;
-    console.log(`Buscando ruta con id: ${id}`);
+    fetch(`http://localhost:8080/api/routes/${id}`)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+      });
   };
 
   return (
