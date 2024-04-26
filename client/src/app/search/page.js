@@ -4,7 +4,7 @@ export default function Search() {
   let searchById = (e) => {
     e.preventDefault();
     let id = e.target[0].value;
-    fetch(`http://localhost:8080/api/routes/${id}`)
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/routes/${id}`)
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
@@ -17,13 +17,12 @@ export default function Search() {
         <input
           type="search"
           placeholder="Busca una ruta a través de su id..."
-          required
         />
         <button className="bg-sky-200 rounded-md p-2" type="submit">
           Buscar
         </button>
       </form>
-      Esta es la página de búsqueda
+      Esta es la página de búsqueda 00143bdd-0a6b-49ec-bb35-36593d303e77
     </div>
   );
 }
