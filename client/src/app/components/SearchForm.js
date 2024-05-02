@@ -7,7 +7,7 @@ export default function SearchForm({ setRoutes }) {
   const [inputs, setInputs] = useState({
     id: "",
     city: [],
-    stations: [],
+    station: [],
     score: [],
     startDate: "",
     endDate: "",
@@ -21,7 +21,7 @@ export default function SearchForm({ setRoutes }) {
     setInputs({
       id: "",
       city: [],
-      stations: [],
+      station: [],
       score: [],
       startDate: "",
       endDate: "",
@@ -71,12 +71,11 @@ export default function SearchForm({ setRoutes }) {
   return (
     <form
       onSubmit={handleSearch}
-      className="flex flex-col bg-white rounded-md shadow-sm p-4"
+      className="flex flex-col bg-white rounded-md shadow-sm gap-2 p-3"
     >
       <div className="flex flex-wrap justify-start gap-2">
         <input
           name="id"
-          type="search"
           placeholder="Introduzca un ID"
           className={`w-44 p-2 rounded-md ${
             inputs.id ? "bg-sky-100 text-sky-800" : "bg-slate-50 text-slate-400"
@@ -121,6 +120,23 @@ export default function SearchForm({ setRoutes }) {
           <option value="Austin">Austin</option>
           <option value="Boston">Boston</option>
           <option value="Chicago">Chicago</option>
+        </select>
+        {inputs.station.map((station) => (
+          <FilterTag
+            key={station}
+            field={"station"}
+            tag={station}
+            setInputs={setInputs}
+          />
+        ))}
+        <select
+          name="station"
+          className="p-2 rounded-md bg-slate-50 text-slate-400 outline-none"
+          onChange={handleSelectChange}
+        >
+          <option value="">Añadir estación</option>
+          <option value="DLA...">DLA...</option>
+          <option value="DSE...">DSE...</option>
         </select>
         <div
           className={`p-2 flex justify-center items-center gap-2 rounded-md ${
@@ -236,6 +252,7 @@ export default function SearchForm({ setRoutes }) {
       <div className="flex flex-row gap-2 justify-end">
         <button
           onClick={clearInputs}
+          type="button"
           className="bg-sky-100 text-sky-800 rounded-md p-2"
         >
           Limpiar filtros

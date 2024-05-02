@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import SearchForm from "../components/SearchForm";
-import RouteTable from "../components/RouteTable";
+import FullTable from "../components/TableWithPages";
 import { getScores } from "../utils/utils";
 
 export default function Search() {
@@ -14,10 +14,29 @@ export default function Search() {
     });
   }, []);
 
+  useEffect(() => {
+    routes.map((route) => {
+      if (!isNaN(route.ScoreId)) {
+        route.ScoreId = scores[route.ScoreId] ? scores[route.ScoreId] : "-";
+      }
+    });
+  }, [routes, scores]);
+
   return (
     <div className="flex flex-col gap-4">
       <SearchForm setRoutes={setRoutes} />
-      <RouteTable routes={routes} scores={scores} />
+      <FullTable
+        headers={["ID", "Estación", "Fecha", "Hora", "Capacidad", "Puntuación"]}
+        keys={[
+          "RouteId",
+          "StationCode",
+          "Date",
+          "DepartureTime",
+          "ExecutorCapacity",
+          "ScoreId",
+        ]}
+        data={routes}
+      />
     </div>
   );
 }
