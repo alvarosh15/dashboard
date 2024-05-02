@@ -1,8 +1,8 @@
-export default function FilterTag({ tag, field, setInputs }) {
-  const removeTag = (tag, field) => {
+export default function Filter({ text, field, setInputs }) {
+  const removeFilter = (text, field) => {
     setInputs((prevInputs) => {
       const updatedValues = new Set(prevInputs[field]);
-      updatedValues.delete(tag);
+      updatedValues.delete(text);
 
       return {
         ...prevInputs,
@@ -13,14 +13,14 @@ export default function FilterTag({ tag, field, setInputs }) {
   return (
     <div
       onClick={() => {
-        removeTag(tag, field);
+        removeFilter(text, field);
       }}
       className="hover:bg-red-100 hover:text-red-800 flex flex-row w-fit group justify-center items-center bg-sky-100 text-sky-800 rounded-md p-2"
     >
-      {tag}
+      {text}
       <span
         onClick={() => {
-          removeTag(tag, field);
+          removeFilter(text, field);
         }}
       >
         <svg

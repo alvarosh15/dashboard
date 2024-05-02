@@ -1,9 +1,9 @@
 "use client";
 import { useState } from "react";
-import FilterTag from "./FilterTag";
-import { search } from "../utils/utils";
+import Filter from "./Filter";
+import { search } from "../utils/dataFetch";
 
-export default function SearchForm({ setRoutes }) {
+export default function RoutesForm({ setRoutes }) {
   const [inputs, setInputs] = useState({
     id: "",
     city: [],
@@ -36,7 +36,6 @@ export default function SearchForm({ setRoutes }) {
     e.preventDefault();
 
     let url = `${process.env.NEXT_PUBLIC_API_URL}/api/routes?`;
-
     search(url, inputs).then((data) => {
       setRoutes(data);
     });
@@ -76,6 +75,7 @@ export default function SearchForm({ setRoutes }) {
       <div className="flex flex-wrap justify-start gap-2">
         <input
           name="id"
+          value={inputs.id}
           placeholder="Introduzca un ID"
           className={`w-44 p-2 rounded-md ${
             inputs.id ? "bg-sky-100 text-sky-800" : "bg-slate-50 text-slate-400"
@@ -84,10 +84,10 @@ export default function SearchForm({ setRoutes }) {
           onChange={handleChange}
         />
         {inputs.score.map((score) => (
-          <FilterTag
+          <Filter
             key={score}
             field={"score"}
-            tag={score}
+            text={score}
             setInputs={setInputs}
           />
         ))}
@@ -102,12 +102,7 @@ export default function SearchForm({ setRoutes }) {
           <option value="Low">Low</option>
         </select>
         {inputs.city.map((city) => (
-          <FilterTag
-            key={city}
-            field={"city"}
-            tag={city}
-            setInputs={setInputs}
-          />
+          <Filter key={city} field={"city"} text={city} setInputs={setInputs} />
         ))}
         <select
           name="city"
@@ -122,10 +117,10 @@ export default function SearchForm({ setRoutes }) {
           <option value="Chicago">Chicago</option>
         </select>
         {inputs.station.map((station) => (
-          <FilterTag
+          <Filter
             key={station}
             field={"station"}
-            tag={station}
+            text={station}
             setInputs={setInputs}
           />
         ))}
@@ -155,6 +150,7 @@ export default function SearchForm({ setRoutes }) {
                 : "bg-slate-50 text-slate-400"
             }
           outline-none`}
+            value={inputs.startDate}
             name="startDate"
             onChange={handleChange}
           />
@@ -176,6 +172,7 @@ export default function SearchForm({ setRoutes }) {
                 : "bg-slate-50 text-slate-400"
             }
           outline-none`}
+            value={inputs.endDate}
             name="endDate"
             onChange={handleChange}
           />
@@ -198,6 +195,7 @@ export default function SearchForm({ setRoutes }) {
                 : "bg-slate-50 text-slate-400"
             }
           outline-none`}
+            value={inputs.startTime}
             name="startTime"
             onChange={handleChange}
           />
@@ -220,6 +218,7 @@ export default function SearchForm({ setRoutes }) {
                 : "bg-slate-50 text-slate-400"
             }
           outline-none`}
+            value={inputs.endTime}
             name="endTime"
             onChange={handleChange}
           />
@@ -232,6 +231,7 @@ export default function SearchForm({ setRoutes }) {
               : "bg-slate-50 text-slate-400"
           }
           outline-none`}
+          value={inputs.lowCapacity}
           placeholder="Capacidad mínima"
           name="lowCapacity"
           onChange={handleChange}
@@ -244,6 +244,7 @@ export default function SearchForm({ setRoutes }) {
               : "bg-slate-50 text-slate-400"
           }
           outline-none`}
+          value={inputs.highCapacity}
           placeholder="Capacidad máxima"
           name="highCapacity"
           onChange={handleChange}

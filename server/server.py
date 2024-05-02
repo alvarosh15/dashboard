@@ -33,6 +33,24 @@ def return_scores():
 
     return jsonify(scores_list)
 
+@app.route("/api/stops", methods=['GET'])
+def return_stops():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM Stop")
+    scores = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    columns = [desc[0] for desc in cursor.description]
+    scores_list = []
+
+    for score in scores:
+        score_dict = dict(zip(columns, score))
+        scores_list.append(score_dict)
+
+    return jsonify(scores_list)
+
 @app.route("/api/routes", methods=['GET'])
 def return_route():
     conn = get_db_connection()
@@ -104,7 +122,6 @@ def return_route():
 
     if routes: 
         columns = [desc[0] for desc in cursor.description]
-        #print(columns)
         routes_list = []
 
         for route in routes:
@@ -123,13 +140,8 @@ def return_route():
         cursor.close()
         conn.close()
 
-        #print(routes_list)
-
         return jsonify(routes_list)
-    else:
-        cursor.close()
-        conn.close()
-        return jsonify({'message': 'No routes found'})
+    
 
 if __name__ == '__main__':
     app.run(debug=True, port=8080)
