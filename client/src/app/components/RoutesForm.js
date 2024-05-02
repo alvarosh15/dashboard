@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Filter from "./Filter";
 import { search } from "../utils/dataFetch";
+import ButtonsForm from "./ButtonsForm";
 
 export default function RoutesForm({ setRoutes }) {
   const [inputs, setInputs] = useState({
@@ -76,7 +77,7 @@ export default function RoutesForm({ setRoutes }) {
         <input
           name="id"
           value={inputs.id}
-          placeholder="Introduzca un ID"
+          placeholder="ID de la ruta"
           className={`w-44 p-2 rounded-md ${
             inputs.id ? "bg-sky-100 text-sky-800" : "bg-slate-50 text-slate-400"
           }
@@ -250,21 +251,7 @@ export default function RoutesForm({ setRoutes }) {
           onChange={handleChange}
         />
       </div>
-      <div className="flex flex-row gap-2 justify-end">
-        <button
-          onClick={clearInputs}
-          type="button"
-          className="bg-sky-100 text-sky-800 rounded-md p-2"
-        >
-          Limpiar filtros
-        </button>
-        <button
-          className="bg-sky-100 text-sky-800 rounded-md p-2"
-          type="submit"
-        >
-          Buscar
-        </button>
-      </div>
+      <ButtonsForm clearInputs={clearInputs} />
     </form>
   );
 }

@@ -1,33 +1,51 @@
 "use client";
 import TableWithPages from "../../components/table/TableWithPages";
+import StopsForm from "../../components/StopsForm";
 import { useState, useEffect } from "react";
-import { search } from "../../utils/dataFetch";
+import { getDict } from "../../utils/dataFetch";
 
 export default function ParadasPage() {
   const [stops, setStops] = useState([]);
+  const [processedStops, setProcessedStops] = useState([]);
+  const [types, setTypes] = useState([]);
 
   useEffect(() => {
-    let inputs = [];
-    let url = `${process.env.NEXT_PUBLIC_API_URL}/api/stops?`;
-    search(url, inputs).then((data) => {
-      console.log(data);
-      setStops(data);
+    let url = `${process.env.NEXT_PUBLIC_API_URL}/api/types`;
+    getDict(url, "Type").then((data) => {
+      setTypes(data);
     });
   }, []);
 
+  useEffect(() => {
+    if (stops.length > 0) {
+      const newStops = stops.map((stop) => {
+        return {
+          ...stop,
+          TypeId: stop.TypeId ? types[stop.TypeId] : "-",
+        };
+      });
+      setProcessedStops(newStops);
+    } else {
+      setProcessedStops([]);
+    }
+  }, [stops, types]);
+
   return (
-    <div>
+    <div className="flex flex-col gap-4">
+      <StopsForm setStops={setStops} />
       <TableWithPages
         headers={[
+          "Código de la ruta",
           "Latitud",
           "Longitud",
-          "Orden",
+          "Posición",
           "Codigo de la parada",
           "Tiempo al siguiente",
           "Tipo",
           "Zona",
         ]}
         keys={[
+          "RouteId",
           "Latitude",
           "Longitude",
           "OrderPosition",
@@ -36,8 +54,8 @@ export default function ParadasPage() {
           "TypeId",
           "ZoneId",
         ]}
-        data={stops}
-        setData={setStops}
+        data={processedStops}
+        setData={setProcessedStops}
       />
     </div>
   );

@@ -1,8 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
-import SearchForm from "../../components/RoutesForm";
+import RoutesForm from "../../components/RoutesForm";
 import TableWithPages from "../../components/table/TableWithPages";
-import { getScores } from "../../utils/dataFetch";
+import { getDict } from "../../utils/dataFetch";
 
 export default function Search() {
   const [routes, setRoutes] = useState([]);
@@ -10,7 +10,8 @@ export default function Search() {
   const [scores, setScores] = useState({});
 
   useEffect(() => {
-    getScores().then((data) => {
+    let url = `${process.env.NEXT_PUBLIC_API_URL}/api/scores`;
+    getDict(url, "Score").then((data) => {
       setScores(data);
     });
   }, []);
@@ -31,7 +32,7 @@ export default function Search() {
 
   return (
     <div className="flex flex-col gap-4">
-      <SearchForm setRoutes={setRoutes} />
+      <RoutesForm setRoutes={setRoutes} />
       <TableWithPages
         headers={[
           "Código de la ruta",

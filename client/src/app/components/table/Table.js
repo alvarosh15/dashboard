@@ -24,7 +24,7 @@ export default function Table({
         {currentItems.map((item, index) => (
           <div
             key={index}
-            className="bg-white shadow-md rounded-md p-4 m-2 w-full"
+            className="bg-white shadow-sm rounded-md p-4 m-2 w-full"
           >
             {keys.map((key, index) => (
               <div key={index} className="text-sky-800">

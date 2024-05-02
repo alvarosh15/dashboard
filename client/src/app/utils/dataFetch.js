@@ -9,13 +9,13 @@ export async function search(url, inputs) {
     }
   });
   url = url.slice(0, -1);
-
+  console.log(url);
   let res = await fetch(url);
   let data = await res.json();
   return data;
 }
 
-export async function getScores() {
+/*export async function getScores() {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/scores`);
   const data = await res.json();
   const scoreMap = data.reduce((acc, score) => {
@@ -23,4 +23,14 @@ export async function getScores() {
     return acc;
   }, {});
   return scoreMap;
+}*/
+
+export async function getDict(url, key) {
+  const res = await fetch(url);
+  const data = await res.json();
+  const dict = data.reduce((acc, elem) => {
+    acc[elem[`${key}Id`]] = elem[`${key}Name`];
+    return acc;
+  }, {});
+  return dict;
 }

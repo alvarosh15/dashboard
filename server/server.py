@@ -33,23 +33,81 @@ def return_scores():
 
     return jsonify(scores_list)
 
-@app.route("/api/stops", methods=['GET'])
-def return_stops():
+@app.route("/api/types", methods=['GET'])
+def return_types():
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM Stop")
-    scores = cursor.fetchall()
+    cursor.execute("SELECT * FROM Type")
+    types = cursor.fetchall()
     cursor.close()
     conn.close()
 
     columns = [desc[0] for desc in cursor.description]
-    scores_list = []
+    types_list = []
 
-    for score in scores:
-        score_dict = dict(zip(columns, score))
-        scores_list.append(score_dict)
+    for type in types:
+        type_dict = dict(zip(columns, type))
+        types_list.append(type_dict)
 
-    return jsonify(scores_list)
+    return jsonify(types_list)
+
+@app.route("/api/stops", methods=['GET'])
+def return_stops():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    route_id = request.args.get('routeId')
+    stop_id = request.args.get('id')
+    low_latitude = request.args.get('lowLatitude')
+    high_latitude = request.args.get('highLatitude')
+    low_longitude = request.args.get('lowLongitude')
+    high_longitude = request.args.get('highLongitude')
+    types = request.args.getlist('type')
+    zone_id = request.args.get('zoneId')
+    position = request.args.get('posicion')
+    low_time_to_next = request.args.get('lowTimeToNext')
+    high_time_to_next = request.args.get('highTimeToNext')
+
+    query = "SELECT * FROM Stop WHERE 1=1"
+
+    if route_id:
+        query += f" AND RouteId = '{route_id}'"
+    if stop_id:
+        query += f" AND StopId = '{stop_id}'"
+    if low_latitude and high_latitude:
+        query += f" AND Latitude BETWEEN {low_latitude} AND {high_latitude}"
+    if low_longitude and high_longitude:
+        query += f" AND Longitude BETWEEN {low_longitude} AND {high_longitude}"
+    if types:
+        type_ids = []
+        for type in types:
+            cursor.execute(f"SELECT TypeId FROM Type WHERE TypeName = '{type}'")
+            result = cursor.fetchone()
+            if result:
+                type_ids.append(result[0])
+        if type_ids:
+            type_ids_str = ','.join(map(str, type_ids))
+            query += f" AND TypeId IN ({type_ids_str})"
+
+    if zone_id:
+        query += f" AND ZoneId = '{zone_id}'"
+    if position:
+        query += f" AND OrderPosition = {position}"
+    if low_time_to_next and high_time_to_next:
+        query += f" AND TimeToNext BETWEEN {low_time_to_next} AND {high_time_to_next}"
+
+    print(query)
+    cursor.execute(query)
+    stops = cursor.fetchall()
+    columns = [desc[0] for desc in cursor.description]
+
+    stops_list = [dict(zip(columns, stop)) for stop in stops]
+
+    cursor.close()
+    conn.close()
+
+    return jsonify(stops_list)
+
 
 @app.route("/api/routes", methods=['GET'])
 def return_route():
@@ -58,7 +116,6 @@ def return_route():
 
     id = request.args.get('id')
     scores = request.args.getlist('score')
-    print(scores)
     cities = request.args.getlist('city')
     city_station_code = {
         'Los Angeles': 'DLA',
