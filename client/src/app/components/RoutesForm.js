@@ -4,7 +4,7 @@ import Filter from "./Filter";
 import { search } from "../utils/dataFetch";
 import ButtonsForm from "./ButtonsForm";
 
-export default function RoutesForm({ setRoutes }) {
+export default function RoutesForm({ setRoutes, setIsLoading }) {
   const [inputs, setInputs] = useState({
     id: "",
     city: [],
@@ -35,9 +35,11 @@ export default function RoutesForm({ setRoutes }) {
 
   const handleSearch = (e) => {
     e.preventDefault();
+    setIsLoading(true);
 
     let url = `${process.env.NEXT_PUBLIC_API_URL}/api/routes?`;
     search(url, inputs).then((data) => {
+      setIsLoading(false);
       setRoutes(data);
     });
   };

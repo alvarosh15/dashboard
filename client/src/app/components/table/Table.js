@@ -19,7 +19,7 @@ export default function Table({
   };
 
   return (
-    <>
+    <div>
       <div className="flex flex-wrap justify-around md:hidden">
         {currentItems.map((item, index) => (
           <div
@@ -69,6 +69,6 @@ export default function Table({
             ))}
         </tbody>
       </table>
-    </>
+    </div>
   );
 }

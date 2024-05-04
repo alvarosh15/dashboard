@@ -1,4 +1,6 @@
 export async function search(url, inputs) {
+  //await new Promise((resolve) => setTimeout(resolve, 3000));
+
   Object.keys(inputs).forEach((key) => {
     if (Array.isArray(inputs[key])) {
       inputs[key].forEach((value) => {
@@ -14,16 +16,6 @@ export async function search(url, inputs) {
   let data = await res.json();
   return data;
 }
-
-/*export async function getScores() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/scores`);
-  const data = await res.json();
-  const scoreMap = data.reduce((acc, score) => {
-    acc[score.ScoreId] = score.ScoreName;
-    return acc;
-  }, {});
-  return scoreMap;
-}*/
 
 export async function getDict(url, key) {
   const res = await fetch(url);

@@ -32,13 +32,7 @@ export default function TableWithPages({ data, headers, keys }) {
     <div>
       {data.length > 0 ? (
         <div className="rounded-md bg-transparent md:bg-white md:shadow-sm p-3 ">
-          <Table
-            headers={headers}
-            keys={keys}
-            setSortConfig={setSortConfig}
-            sortConfig={sortConfig}
-            currentItems={currentItems}
-          />
+          <Table headers={headers} keys={keys} sortConfig={sortConfig} setSortConfig={setSortConfig} currentItems={currentItems} />
           <DataPagination data={sortedData} setCurrentItems={setCurrentItems} />
         </div>
       ) : (

@@ -4,7 +4,7 @@ import Filter from "./Filter";
 import ButtonsForm from "./ButtonsForm";
 import { search } from "../utils/dataFetch";
 
-export default function StopsForm({ setStops }) {
+export default function StopsForm({ setStops, setIsLoading }) {
   const [inputs, setInputs] = useState({
     routeId: "",
     id: "",
@@ -37,9 +37,11 @@ export default function StopsForm({ setStops }) {
 
   const handleSearch = (e) => {
     e.preventDefault();
+    setIsLoading(true);
 
     let url = `${process.env.NEXT_PUBLIC_API_URL}/api/stops?`;
     search(url, inputs).then((data) => {
+      setIsLoading(false);
       setStops(data);
     });
   };
