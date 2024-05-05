@@ -3,13 +3,29 @@ import TableWithPages from "../../components/table/TableWithPages";
 import StopsForm from "../../components/StopsForm";
 import { useState, useEffect } from "react";
 import { getDict } from "../../utils/dataFetch";
-import TableSkeleton from "@/app/components/table/TableSkeleton";
 
 export default function ParadasPage() {
   const [stops, setStops] = useState([]);
   const [processedStops, setProcessedStops] = useState([]);
   const [types, setTypes] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [totalPages, setTotalPages] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [sortConfig, setSortConfig] = useState({ key: "", direction: null });
+  const [inputs, setInputs] = useState({
+    routeId: "",
+    id: "",
+    lowLatitude: "",
+    highLatitude: "",
+    lowLongitude: "",
+    highLongitude: "",
+    type: [],
+    zoneId: "",
+    posicion: "",
+    lowTimeToNext: "",
+    highTimeToNext: "",
+    limit: 20,
+  });
+  const url = `${process.env.NEXT_PUBLIC_API_URL}/api/stops?`;
 
   useEffect(() => {
     let url = `${process.env.NEXT_PUBLIC_API_URL}/api/types`;
@@ -34,46 +50,45 @@ export default function ParadasPage() {
 
   return (
     <div className="flex flex-col gap-4">
-      <StopsForm setStops={setStops} setIsLoading={setIsLoading} />
-      {isLoading ? (
-        <TableSkeleton
-          headers={[
-            "Código de la ruta",
-            "Latitud",
-            "Longitud",
-            "Posición",
-            "Codigo de la parada",
-            "Tiempo al siguiente",
-            "Tipo",
-            "Zona",
-          ]}
-          rowCount={5}
-        />
-      ) : (
-        <TableWithPages
-          headers={[
-            "Código de la ruta",
-            "Latitud",
-            "Longitud",
-            "Posición",
-            "Codigo de la parada",
-            "Tiempo al siguiente",
-            "Tipo",
-            "Zona",
-          ]}
-          keys={[
-            "RouteId",
-            "Latitude",
-            "Longitude",
-            "OrderPosition",
-            "StopId",
-            "TimeToNext",
-            "TypeId",
-            "ZoneId",
-          ]}
-          data={processedStops}
-        />
-      )}
+      <StopsForm
+        setStops={setStops}
+        setTotalPages={setTotalPages}
+        setCurrentPage={setCurrentPage}
+        setInputs={setInputs}
+        inputs={inputs}
+        setSortConfig={setSortConfig}
+      />
+      <TableWithPages
+        headers={[
+          "Código de la ruta",
+          "Latitud",
+          "Longitud",
+          "Posición",
+          "Codigo de la parada",
+          "Tiempo al siguiente",
+          "Tipo",
+          "Zona",
+        ]}
+        keys={[
+          "RouteId",
+          "Latitude",
+          "Longitude",
+          "OrderPosition",
+          "StopId",
+          "TimeToNext",
+          "TypeId",
+          "ZoneId",
+        ]}
+        data={processedStops}
+        setData={setStops}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+        totalPages={totalPages}
+        inputs={inputs}
+        url={url}
+        sortConfig={sortConfig}
+        setSortConfig={setSortConfig}
+      />
     </div>
   );
 }

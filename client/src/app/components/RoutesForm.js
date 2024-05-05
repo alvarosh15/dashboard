@@ -1,23 +1,16 @@
 "use client";
-import { useState } from "react";
 import Filter from "./Filter";
 import { search } from "../utils/dataFetch";
 import ButtonsForm from "./ButtonsForm";
 
-export default function RoutesForm({ setRoutes, setIsLoading }) {
-  const [inputs, setInputs] = useState({
-    id: "",
-    city: [],
-    station: [],
-    score: [],
-    startDate: "",
-    endDate: "",
-    startTime: "",
-    endTime: "",
-    lowCapacity: "",
-    highCapacity: "",
-  });
-
+export default function RoutesForm({
+  setRoutes,
+  setTotalPages,
+  setInputs,
+  inputs,
+  setCurrentPage,
+  setSortConfig,
+}) {
   const clearInputs = () => {
     setInputs({
       id: "",
@@ -30,17 +23,21 @@ export default function RoutesForm({ setRoutes, setIsLoading }) {
       endTime: "",
       lowCapacity: "",
       highCapacity: "",
+      limit: 20,
     });
+    setRoutes([]);
+    setCurrentPage(1);
+    setSortConfig({ key: "", direction: null });
   };
 
   const handleSearch = (e) => {
     e.preventDefault();
-    setIsLoading(true);
-
     let url = `${process.env.NEXT_PUBLIC_API_URL}/api/routes?`;
-    search(url, inputs).then((data) => {
-      setIsLoading(false);
-      setRoutes(data);
+    search(url, inputs).then((res) => {
+      setRoutes(res.data);
+      setTotalPages(res.totalPages);
+      setCurrentPage(1);
+      setSortConfig({ key: "", direction: null });
     });
   };
 
@@ -253,7 +250,11 @@ export default function RoutesForm({ setRoutes, setIsLoading }) {
           onChange={handleChange}
         />
       </div>
-      <ButtonsForm clearInputs={clearInputs} />
+      <ButtonsForm
+        clearInputs={clearInputs}
+        setInputs={setInputs}
+        inputs={inputs}
+      />
     </form>
   );
 }

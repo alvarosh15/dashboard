@@ -68,7 +68,15 @@ def return_stops():
     low_time_to_next = request.args.get('lowTimeToNext')
     high_time_to_next = request.args.get('highTimeToNext')
 
-    query = "SELECT * FROM Stop WHERE 1=1"
+    # Obtenemos los parametros de ordenación
+    sort_key = request.args.get('sort')
+    sort_direction = request.args.get('direction')
+
+    # Obtenemos los parametros de paginacion
+    limit = request.args.get('limit', type=int, default=20)  
+    page = request.args.get('page', type=int, default=1) 
+
+    query = " FROM Stop WHERE 1=1"
 
     if route_id:
         query += f" AND RouteId = '{route_id}'"
@@ -96,8 +104,29 @@ def return_stops():
     if low_time_to_next and high_time_to_next:
         query += f" AND TimeToNext BETWEEN {low_time_to_next} AND {high_time_to_next}"
 
-    print(query)
-    cursor.execute(query)
+    # Ejecutamos la consulta para obtener el número total de páginas
+    count_query = f"SELECT COUNT(*) {query}"
+    print(count_query)
+    cursor.execute(count_query)
+    total_count = cursor.fetchone()[0]
+    print(total_count)
+    total_pages = (total_count + limit - 1) // limit 
+
+    # Añadimos los parametros de ordenación
+    if sort_key and sort_direction:
+        query += f" ORDER BY {sort_key} {sort_direction}"
+
+    # Añadimos los parametros de paginacion
+    if limit:
+        query += f" LIMIT {limit}"
+    if page:
+        offset = (page - 1) * limit
+        query += f" OFFSET {offset}"
+
+    # Ejectuamos la consulta para obtener todos los datos
+    data_query = f"SELECT * {query}"
+    print(data_query)
+    cursor.execute(data_query)
     stops = cursor.fetchall()
     columns = [desc[0] for desc in cursor.description]
 
@@ -106,7 +135,7 @@ def return_stops():
     cursor.close()
     conn.close()
 
-    return jsonify(stops_list)
+    return jsonify({"data": stops_list, "totalPages": total_pages})
 
 
 @app.route("/api/routes", methods=['GET'])
@@ -114,9 +143,11 @@ def return_route():
     conn = get_db_connection()
     cursor = conn.cursor()
 
+    # Obtenemos los filtros de la petición
     id = request.args.get('id')
     scores = request.args.getlist('score')
     cities = request.args.getlist('city')
+    # Creamos un diccionario para mapear las ciudades con sus códigos de estación
     city_station_code = {
         'Los Angeles': 'DLA',
         'Seattle': 'DSE',
@@ -131,8 +162,18 @@ def return_route():
     low_capacity = request.args.get('lowCapacity')
     high_capacity = request.args.get('highCapacity')
 
-    query = f"SELECT * FROM Route WHERE 1=1"
+    # Obtenemos los parametros de ordenación
+    sort_key = request.args.get('sort')
+    sort_direction = request.args.get('direction')
 
+    # Obtenemos los parametros de paginacion
+    limit = request.args.get('limit', type=int, default=20)  
+    page = request.args.get('page', type=int, default=1) 
+
+    # Construimos la petición 
+    query = f" FROM Route WHERE 1=1"
+
+    # Añadimos los filtros a la petición
     if id:
         query += f" AND RouteId='{id}'"
     
@@ -173,8 +214,29 @@ def return_route():
     elif high_capacity:
         query += f" AND ExecutorCapacity <= {high_capacity}"
 
-    print(query)
-    cursor.execute(query)
+    # Ejecutamos la consulta para obtener el número total de páginas
+    count_query = f"SELECT COUNT(*) {query}"
+    print(count_query)
+    cursor.execute(count_query)
+    total_count = cursor.fetchone()[0]
+    print(total_count)
+    total_pages = (total_count + limit - 1) // limit 
+
+    # Añadimos los parametros de ordenación
+    if sort_key and sort_direction:
+        query += f" ORDER BY {sort_key} {sort_direction}"
+
+    # Añadimos los parametros de paginacion
+    if limit:
+        query += f" LIMIT {limit}"
+    if page:
+        offset = (page - 1) * limit
+        query += f" OFFSET {offset}"
+
+    # Ejectuamos la consulta para obtener todos los datos
+    data_query = f"SELECT * {query}"
+    print(data_query)
+    cursor.execute(data_query)
     routes = cursor.fetchall()
 
     if routes: 
@@ -194,11 +256,14 @@ def return_route():
                     route_dict[key] = f"{hours:02}:{minutes:02}:{seconds:02}"
             routes_list.append(route_dict)
             
-        cursor.close()
-        conn.close()
+    cursor.close()
+    conn.close()
 
-        return jsonify(routes_list)
-    
+    return jsonify({
+    'data': routes_list,
+    'totalPages': total_pages
+    })
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=8080)

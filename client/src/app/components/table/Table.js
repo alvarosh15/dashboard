@@ -1,27 +1,37 @@
+import { search } from "@/app/utils/dataFetch";
+
 export default function Table({
   headers,
-  setSortConfig,
-  sortConfig,
-  currentItems,
+  data,
+  setData,
   keys,
+  sortConfig,
+  setSortConfig,
+  inputs,
+  setCurrentPage,
+  url,
 }) {
   const requestSort = (key) => {
-    if (sortConfig.key === key && sortConfig.direction === "ascending") {
-      setSortConfig({ key, direction: "descending" });
-    } else if (
-      sortConfig.key === key &&
-      sortConfig.direction === "descending"
-    ) {
-      setSortConfig({ key, direction: null });
-    } else {
-      setSortConfig({ key, direction: "ascending" });
+    let sort = { key, direction: "ASC" };
+    if (sortConfig && sortConfig.key === key) {
+      if (sortConfig.direction === "ASC") {
+        sort.direction = "DESC";
+      } else if (sortConfig.direction === "DESC") {
+        sort.direction = null;
+        sort.key = "";
+      }
     }
+    setSortConfig(sort);
+    setCurrentPage(1);
+    search(url, inputs, sort).then((res) => {
+      setData(res.data);
+    });
   };
 
   return (
     <div>
       <div className="flex flex-wrap justify-around md:hidden">
-        {currentItems.map((item, index) => (
+        {data.map((item, index) => (
           <div
             key={index}
             className="bg-white shadow-sm rounded-md p-4 m-2 w-full"
@@ -45,13 +55,13 @@ export default function Table({
                 key={index}
               >
                 {header}
-                {sortConfig.key == keys[index] && (
-                  <span className="text-sky-800">
-                    {sortConfig.direction === "ascending"
+                {sortConfig && sortConfig.key === keys[index] && (
+                  <span>
+                    {sortConfig.direction === "ASC"
                       ? "▲"
-                      : sortConfig.direction == null
-                      ? ""
-                      : "▼"}
+                      : sortConfig.direction === "DESC"
+                      ? "▼"
+                      : ""}
                   </span>
                 )}
               </th>
@@ -59,8 +69,8 @@ export default function Table({
           </tr>
         </thead>
         <tbody>
-          {currentItems.length > 0 &&
-            currentItems.map((route, index) => (
+          {data.length > 0 &&
+            data.map((route, index) => (
               <tr className="font-mono text-center" key={index}>
                 {keys.map((key, index) => (
                   <td key={index}>{route[key]}</td>

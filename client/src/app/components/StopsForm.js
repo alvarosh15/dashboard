@@ -1,24 +1,16 @@
 "use client";
-import { useState } from "react";
 import Filter from "./Filter";
 import ButtonsForm from "./ButtonsForm";
 import { search } from "../utils/dataFetch";
 
-export default function StopsForm({ setStops, setIsLoading }) {
-  const [inputs, setInputs] = useState({
-    routeId: "",
-    id: "",
-    lowLatitude: "",
-    highLatitude: "",
-    lowLongitude: "",
-    highLongitude: "",
-    type: [],
-    zoneId: "",
-    posicion: "",
-    lowTimeToNext: "",
-    highTimeToNext: "",
-  });
-
+export default function StopsForm({
+  setStops,
+  setTotalPages,
+  setInputs,
+  inputs,
+  setCurrentPage,
+  setSortConfig,
+}) {
   const clearInputs = () => {
     setInputs({
       routeId: "",
@@ -32,17 +24,22 @@ export default function StopsForm({ setStops, setIsLoading }) {
       posicion: "",
       lowTimeToNext: "",
       highTimeToNext: "",
+      limit: 20,
     });
+    setStops([]);
+    setCurrentPage(1);
+    setSortConfig({ key: "", direction: null });
   };
 
   const handleSearch = (e) => {
     e.preventDefault();
-    setIsLoading(true);
 
     let url = `${process.env.NEXT_PUBLIC_API_URL}/api/stops?`;
-    search(url, inputs).then((data) => {
-      setIsLoading(false);
-      setStops(data);
+    search(url, inputs).then((res) => {
+      setStops(res.data);
+      setTotalPages(res.totalPages);
+      setCurrentPage(1);
+      setSortConfig({ key: "", direction: null });
     });
   };
 
@@ -216,7 +213,11 @@ export default function StopsForm({ setStops, setIsLoading }) {
           onChange={handleChange}
         />
       </div>
-      <ButtonsForm clearInputs={clearInputs} />
+      <ButtonsForm
+        clearInputs={clearInputs}
+        setInputs={setInputs}
+        inputs={inputs}
+      />
     </form>
   );
 }

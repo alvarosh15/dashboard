@@ -1,27 +1,27 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
+import { search } from "../../utils/dataFetch";
 
-export default function DataPagination({ data, setCurrentItems }) {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(20);
+export default function DataPagination({
+  totalPages,
+  inputs,
+  setData,
+  url,
+  currentPage,
+  setCurrentPage,
+  sortConfig,
+}) {
   const [delta, setDelta] = useState(2);
-
-  const totalPages = Math.ceil(data.length / itemsPerPage);
 
   const changePage = useCallback(
     (pageNumber) => {
-      const lastIndex = pageNumber * itemsPerPage;
-      const firstIndex = lastIndex - itemsPerPage;
-      const newCurrentItems = data.slice(firstIndex, lastIndex);
-      setCurrentItems(newCurrentItems);
-      setCurrentPage(pageNumber);
+      search(url, inputs, sortConfig, pageNumber).then((res) => {
+        setCurrentPage(pageNumber);
+        setData(res.data);
+      });
     },
-    [data, itemsPerPage, setCurrentItems]
+    [inputs, url, setData, setCurrentPage, sortConfig]
   );
-
-  useEffect(() => {
-    changePage(1);
-  }, [data, changePage]);
 
   useEffect(() => {
     const getResponsiveDelta = () => {
@@ -32,11 +32,9 @@ export default function DataPagination({ data, setCurrentItems }) {
     };
 
     setDelta(getResponsiveDelta());
-    setItemsPerPage(getResponsiveDelta() * 5);
 
     const handleResize = () => {
       setDelta(getResponsiveDelta());
-      setItemsPerPage(getResponsiveDelta() * 5);
     };
 
     window.addEventListener("resize", handleResize);
