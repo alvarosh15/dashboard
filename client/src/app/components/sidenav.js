@@ -50,7 +50,7 @@ export default function SideNav() {
             </svg>
           </ActiveLink>
         </Link>
-        <Link href="/estadisticas">
+        <Link href="/estadisticas/general">
           <ActiveLink text="Estadisticas">
             <svg
               xmlns="http://www.w3.org/2000/svg"

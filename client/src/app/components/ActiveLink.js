@@ -6,7 +6,7 @@ export default function ActiveLink({ text, children }) {
 
   let segments = path.toLowerCase().split("/").filter(Boolean);
 
-  let normalizedText = text.toLowerCase();
+  let normalizedText = text.toLowerCase().replace(" ", "");
 
   const isActive = segments.some((segment) => segment.includes(normalizedText));
 
