@@ -32,3 +32,17 @@ export async function getDict(url, key) {
   }, {});
   return dict;
 }
+
+export async function numberOfRoutesByScore(city) {
+  let url = `${process.env.NEXT_PUBLIC_API_URL}/api/score_counts?`;
+  if (city) {
+    url += `city=${city}`;
+  }
+  const res = await fetch(url);
+  const data = await res.json();
+
+  const labels = Object.keys(data);
+  const values = labels.map((label) => data[label]);
+  let aux = { labels, values };
+  return aux;
+}

@@ -15,6 +15,44 @@ def get_db_connection():
     )
     return conn
 
+@app.route("/api/score_counts", methods=['GET'])
+def score_counts():
+    city = request.args.get('city')
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    # Construimos la consulta base
+    query = """
+    SELECT COALESCE(Score.ScoreName, 'Sin datos') AS ScoreName, COUNT(*) AS Count
+    FROM Route
+    LEFT JOIN Score ON Route.ScoreId = Score.ScoreId
+    """
+
+    city_station_code = {
+        'Los Angeles': 'DLA',
+        'Seattle': 'DSE',
+        'Chicago': 'DCH',
+        'Boston': 'DBO',
+        'Austin': 'DAU'
+    }
+
+    # Añadimos filtro por ciudad si se proporciona
+    if city:
+        query += f" WHERE Route.StationCode LIKE '{city_station_code[city]}%' "
+
+    query += "GROUP BY Score.ScoreName"
+
+    cursor.execute(query)
+    results = cursor.fetchall()
+    print(results)
+    cursor.close()
+    conn.close()
+
+    # Preparar los datos para la respuesta
+    score_counts = {row[0]: row[1] for row in results}
+    return jsonify(score_counts)
+
+
 @app.route("/api/scores", methods=['GET'])
 def return_scores():
     conn = get_db_connection()
