@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
-import { getDict } from "../../utils/dataFetch";
-import RoutesForm from "../../components/RoutesForm";
+import { getDict, getStationCodes } from "../../utils/dataFetch";
+import RoutesForm from "../../components/forms/RoutesForm";
 import TableWithPages from "../../components/table/TableWithPages";
 
 export default function RutasPage() {
@@ -11,6 +11,7 @@ export default function RutasPage() {
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [sortConfig, setSortConfig] = useState({ key: "", direction: null });
+  const [stationCodes, setStationCodes] = useState([]);
   const [inputs, setInputs] = useState({
     id: "",
     city: [],
@@ -28,8 +29,20 @@ export default function RutasPage() {
 
   useEffect(() => {
     let url = `${process.env.NEXT_PUBLIC_API_URL}/api/scores`;
+    let dict_scores = {
+      High: "Alta",
+      Medium: "Media",
+      Low: "Baja",
+    };
+
     getDict(url, "Score").then((data) => {
+      for (const key in data) {
+        data[key] = dict_scores[data[key]];
+      }
       setScores(data);
+    });
+    getStationCodes().then((data) => {
+      setStationCodes(data);
     });
   }, []);
 
@@ -56,6 +69,7 @@ export default function RutasPage() {
         setInputs={setInputs}
         inputs={inputs}
         setSortConfig={setSortConfig}
+        stationCodes={stationCodes}
       />
 
       <TableWithPages

@@ -1,6 +1,6 @@
 "use client";
 import TableWithPages from "../../components/table/TableWithPages";
-import StopsForm from "../../components/StopsForm";
+import StopsForm from "../../components/forms/StopsForm";
 import { useState, useEffect } from "react";
 import { getDict } from "../../utils/dataFetch";
 
@@ -29,7 +29,14 @@ export default function ParadasPage() {
 
   useEffect(() => {
     let url = `${process.env.NEXT_PUBLIC_API_URL}/api/types`;
+    let dict_types = {
+      Station: "Almacen",
+      Dropoff: "Entrega",
+    };
     getDict(url, "Type").then((data) => {
+      for (const key in data) {
+        data[key] = dict_types[data[key]];
+      }
       setTypes(data);
     });
   }, []);

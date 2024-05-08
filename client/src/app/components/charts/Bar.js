@@ -2,19 +2,21 @@
 import dynamic from "next/dynamic";
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 
-export default function PieChart({ data, title, colorPalette }) {
+// Recommended: 2x1 or 3x1 box
+export default function Bar({ data, layout, title, colorPalette }) {
   return (
     <Plot
       data={[
         {
           ...data,
-          type: "pie",
+          type: "bar",
           marker: {
-            colors: colorPalette,
+            color: colorPalette,
           },
         },
       ]}
       layout={{
+        ...layout,
         responsive: true,
         useResizeHandler: true,
         autosize: true,

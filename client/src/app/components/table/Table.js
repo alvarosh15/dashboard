@@ -73,7 +73,7 @@ export default function Table({
             data.map((route, index) => (
               <tr className="font-mono text-center" key={index}>
                 {keys.map((key, index) => (
-                  <td key={index}>{route[key]}</td>
+                  <td key={index}>{route[key] ? route[key] : "-"}</td>
                 ))}
               </tr>
             ))}

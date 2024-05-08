@@ -1,7 +1,8 @@
 "use client";
 import Filter from "./Filter";
 import ButtonsForm from "./ButtonsForm";
-import { search } from "../utils/dataFetch";
+import { search } from "../../utils/dataFetch";
+import NumberInput from "./NumberInput";
 
 export default function StopsForm({
   setStops,
@@ -97,57 +98,29 @@ export default function StopsForm({
         outline-none`}
           onChange={handleChange}
         />
-        <input
-          type="number"
-          className={`w-36 p-2 rounded-md ${
-            inputs.lowLatitude
-              ? "bg-sky-100 text-sky-800"
-              : "bg-slate-50 text-slate-400"
-          }
-          outline-none`}
-          value={inputs.lowLatitude}
-          placeholder="Latitud mínima"
-          name="lowLatitude"
-          onChange={handleChange}
+        <NumberInput
+          inputs={inputs}
+          field={"lowLatitude"}
+          placeHolder={"Latitud mínima"}
+          handleChange={handleChange}
         />
-        <input
-          type="number"
-          className={`w-36 p-2 rounded-md ${
-            inputs.highLatitude
-              ? "bg-sky-100 text-sky-800"
-              : "bg-slate-50 text-slate-400"
-          }
-          outline-none`}
-          value={inputs.highLatitude}
-          placeholder="Latitud máxima"
-          name="highLatitude"
-          onChange={handleChange}
+        <NumberInput
+          inputs={inputs}
+          field={"highLatitude"}
+          placeHolder={"Latitud máxima"}
+          handleChange={handleChange}
         />
-        <input
-          type="number"
-          className={`w-36 p-2 rounded-md ${
-            inputs.lowLongitude
-              ? "bg-sky-100 text-sky-800"
-              : "bg-slate-50 text-slate-400"
-          }
-          outline-none`}
-          value={inputs.lowLongitude}
-          placeholder="Longitud mínima"
-          name="lowLongitude"
-          onChange={handleChange}
+        <NumberInput
+          inputs={inputs}
+          field={"lowLongitude"}
+          placeHolder={"Longitud mínima"}
+          handleChange={handleChange}
         />
-        <input
-          type="number"
-          className={`w-36 p-2 rounded-md ${
-            inputs.highLongitude
-              ? "bg-sky-100 text-sky-800"
-              : "bg-slate-50 text-slate-400"
-          }
-          outline-none`}
-          value={inputs.highLongitude}
-          placeholder="Longitud máxima"
-          name="highLongitude"
-          onChange={handleChange}
+        <NumberInput
+          inputs={inputs}
+          field={"highLongitude"}
+          placeHolder={"Longitud máxima"}
+          handleChange={handleChange}
         />
         {inputs.type.map((type) => (
           <Filter key={type} field={"type"} text={type} setInputs={setInputs} />
@@ -158,8 +131,8 @@ export default function StopsForm({
           onChange={handleSelectChange}
         >
           <option value="">Añadir tipo</option>
-          <option value="Station">Station</option>
-          <option value="Dropoff">Dropoff</option>
+          <option value="Almacen">Almacen</option>
+          <option value="Entrega">Entrega</option>
         </select>
         <input
           name="zoneId"
@@ -173,44 +146,23 @@ export default function StopsForm({
           outline-none`}
           onChange={handleChange}
         />
-        <input
-          type="number"
-          className={`w-36 p-2 rounded-md ${
-            inputs.posicion
-              ? "bg-sky-100 text-sky-800"
-              : "bg-slate-50 text-slate-400"
-          }
-          outline-none`}
-          value={inputs.posicion}
-          placeholder="Posición"
-          name="posicion"
-          onChange={handleChange}
+        <NumberInput
+          inputs={inputs}
+          field={"posicion"}
+          placeHolder={"Posición"}
+          handleChange={handleChange}
         />
-        <input
-          type="number"
-          className={`w-36 p-2 rounded-md ${
-            inputs.lowTimeToNext
-              ? "bg-sky-100 text-sky-800"
-              : "bg-slate-50 text-slate-400"
-          }
-        outline-none`}
-          value={inputs.lowTimeToNext}
-          placeholder="Tiempo mínimo al siguiente"
-          name="lowTimeToNext"
-          onChange={handleChange}
+        <NumberInput
+          inputs={inputs}
+          field={"lowTimeToNext"}
+          placeHolder={"Tiempo mínimo al siguiente"}
+          handleChange={handleChange}
         />
-        <input
-          type="number"
-          className={`w-36 p-2 rounded-md ${
-            inputs.highTimeToNext
-              ? "bg-sky-100 text-sky-800"
-              : "bg-slate-50 text-slate-400"
-          }
-        outline-none`}
-          value={inputs.highTimeToNext}
-          placeholder="Tiempo máximo al siguiente"
-          name="highTimeToNext"
-          onChange={handleChange}
+        <NumberInput
+          inputs={inputs}
+          field={"highTimeToNext"}
+          placeHolder={"Tiempo máximo al siguiente"}
+          handleChange={handleChange}
         />
       </div>
       <ButtonsForm

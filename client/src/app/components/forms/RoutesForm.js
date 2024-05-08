@@ -1,7 +1,9 @@
 "use client";
 import Filter from "./Filter";
-import { search } from "../utils/dataFetch";
+import { search } from "../../utils/dataFetch";
 import ButtonsForm from "./ButtonsForm";
+import IntervalInput from "./IntervalInput";
+import NumberInput from "./NumberInput";
 
 export default function RoutesForm({
   setRoutes,
@@ -10,6 +12,7 @@ export default function RoutesForm({
   inputs,
   setCurrentPage,
   setSortConfig,
+  stationCodes,
 }) {
   const clearInputs = () => {
     setInputs({
@@ -97,9 +100,10 @@ export default function RoutesForm({
           onChange={handleSelectChange}
         >
           <option value="">Añadir puntación</option>
-          <option value="High">High</option>
-          <option value="Medium">Medium</option>
-          <option value="Low">Low</option>
+          <option value="Alta">Alta</option>
+          <option value="Media">Media</option>
+          <option value="Baja">Baja</option>
+          <option value="Sin datos">Sin datos</option>
         </select>
         {inputs.city.map((city) => (
           <Filter key={city} field={"city"} text={city} setInputs={setInputs} />
@@ -130,124 +134,37 @@ export default function RoutesForm({
           onChange={handleSelectChange}
         >
           <option value="">Añadir estación</option>
-          <option value="DLA...">DLA...</option>
-          <option value="DSE...">DSE...</option>
+          {stationCodes.map((station) => (
+            <option key={station} value={station}>
+              {station}
+            </option>
+          ))}
         </select>
-        <div
-          className={`p-2 flex justify-center items-center gap-2 rounded-md ${
-            inputs.startDate
-              ? "bg-sky-100 text-sky-800"
-              : "bg-slate-50 text-slate-400"
-          }
-          outline-none`}
-        >
-          Desde
-          <input
-            type="date"
-            className={`${
-              inputs.startDate
-                ? "bg-sky-100 text-sky-800"
-                : "bg-slate-50 text-slate-400"
-            }
-          outline-none`}
-            value={inputs.startDate}
-            name="startDate"
-            onChange={handleChange}
-          />
-        </div>
-        <div
-          className={`p-2 flex justify-center items-center gap-2 rounded-md ${
-            inputs.endDate
-              ? "bg-sky-100 text-sky-800"
-              : "bg-slate-50 text-slate-400"
-          }
-          outline-none`}
-        >
-          Hasta
-          <input
-            type="date"
-            className={`${
-              inputs.endDate
-                ? "bg-sky-100 text-sky-800"
-                : "bg-slate-50 text-slate-400"
-            }
-          outline-none`}
-            value={inputs.endDate}
-            name="endDate"
-            onChange={handleChange}
-          />
-        </div>
-
-        <div
-          className={`p-2 flex justify-center items-center gap-2 rounded-md ${
-            inputs.startTime
-              ? "bg-sky-100 text-sky-800"
-              : "bg-slate-50 text-slate-400"
-          }
-          outline-none`}
-        >
-          Desde
-          <input
-            type="time"
-            className={`${
-              inputs.startTime
-                ? "bg-sky-100 text-sky-800"
-                : "bg-slate-50 text-slate-400"
-            }
-          outline-none`}
-            value={inputs.startTime}
-            name="startTime"
-            onChange={handleChange}
-          />
-        </div>
-
-        <div
-          className={`p-2 flex justify-center items-center gap-2 rounded-md ${
-            inputs.endTime
-              ? "bg-sky-100 text-sky-800"
-              : "bg-slate-50 text-slate-400"
-          }
-          outline-none`}
-        >
-          Hasta
-          <input
-            type="time"
-            className={`${
-              inputs.endTime
-                ? "bg-sky-100 text-sky-800"
-                : "bg-slate-50 text-slate-400"
-            }
-          outline-none`}
-            value={inputs.endTime}
-            name="endTime"
-            onChange={handleChange}
-          />
-        </div>
-        <input
-          type="number"
-          className={`w-36 p-2 rounded-md ${
-            inputs.lowCapacity
-              ? "bg-sky-100 text-sky-800"
-              : "bg-slate-50 text-slate-400"
-          }
-          outline-none`}
-          value={inputs.lowCapacity}
-          placeholder="Capacidad mínima"
-          name="lowCapacity"
-          onChange={handleChange}
+        <IntervalInput
+          inputs={inputs}
+          start={"startDate"}
+          end={"endDate"}
+          handleChange={handleChange}
+          type="date"
         />
-        <input
-          type="number"
-          className={`w-36 p-2 rounded-md ${
-            inputs.highCapacity
-              ? "bg-sky-100 text-sky-800"
-              : "bg-slate-50 text-slate-400"
-          }
-          outline-none`}
-          value={inputs.highCapacity}
-          placeholder="Capacidad máxima"
-          name="highCapacity"
-          onChange={handleChange}
+        <IntervalInput
+          inputs={inputs}
+          start={"startTime"}
+          end={"endTime"}
+          handleChange={handleChange}
+          type="time"
+        />
+        <NumberInput
+          inputs={inputs}
+          field={"lowCapacity"}
+          placeHolder={"Capacidad mínima"}
+          handleChange={handleChange}
+        />
+        <NumberInput
+          inputs={inputs}
+          field={"highCapacity"}
+          placeHolder={"Capacidad máxima"}
+          handleChange={handleChange}
         />
       </div>
       <ButtonsForm
