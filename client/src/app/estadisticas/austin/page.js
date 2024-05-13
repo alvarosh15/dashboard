@@ -1,13 +1,15 @@
 import { OneByOne, TwoByOne, ThreeByOne } from "@/app/components/charts/Boxes";
 import Pie from "@/app/components/charts/Pie";
 import Bar from "@/app/components/charts/Bar";
+import DynamicChart from "@/app/components/charts/DynamicChart";
 import {
   numberOfRoutesByScore,
   numberOfRoutesByDay,
   numberOfRoutesByMonth,
   numberOfPackagesByStatus,
   numberOfRoutesByCapacity,
-} from "@/app/utils/dataFetch";
+} from "@/app/utils/statistics";
+import { charts, favCharts } from "../charts";
 
 export default async function EstadisticasAustinPage() {
   const routesByScore = await numberOfRoutesByScore("Austin");
@@ -18,6 +20,11 @@ export default async function EstadisticasAustinPage() {
 
   return (
     <div className="flex flex-col w-full lg:flex-row lg:flex-wrap *:p-1 *:h-72">
+      {favCharts.map(({ name, city }, index) => {
+        const config = charts[name];
+        return <DynamicChart key={index} config={{ ...config, city }} />;
+      })}
+
       <TwoByOne>
         <Bar
           data={routesByCapacity}

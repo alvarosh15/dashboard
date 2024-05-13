@@ -1,8 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
-import { getDict, getStationCodes } from "../../utils/dataFetch";
+import { search, getDict, getStationCodes } from "../../utils/dataFetch";
 import RoutesForm from "../../components/forms/RoutesForm";
 import TableWithPages from "../../components/table/TableWithPages";
+import { useRoutesInputs } from "../../context/ContextProvider";
 
 export default function RutasPage() {
   const [routes, setRoutes] = useState([]);
@@ -12,30 +13,19 @@ export default function RutasPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortConfig, setSortConfig] = useState({ key: "", direction: null });
   const [stationCodes, setStationCodes] = useState([]);
-  const [inputs, setInputs] = useState({
-    id: "",
-    city: [],
-    station: [],
-    score: [],
-    startDate: "",
-    endDate: "",
-    startTime: "",
-    endTime: "",
-    lowCapacity: "",
-    highCapacity: "",
-    limit: 20,
-  });
+  const { routesInputs: inputs, setRoutesInputs: setInputs } =
+    useRoutesInputs();
   const url = `${process.env.NEXT_PUBLIC_API_URL}/api/routes?`;
 
   useEffect(() => {
-    let url = `${process.env.NEXT_PUBLIC_API_URL}/api/scores`;
+    let scoreUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/scores`;
     let dict_scores = {
       High: "Alta",
       Medium: "Media",
       Low: "Baja",
     };
 
-    getDict(url, "Score").then((data) => {
+    getDict(scoreUrl, "Score").then((data) => {
       for (const key in data) {
         data[key] = dict_scores[data[key]];
       }
@@ -43,6 +33,14 @@ export default function RutasPage() {
     });
     getStationCodes().then((data) => {
       setStationCodes(data);
+    });
+
+    let searchUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/routes?`;
+    search(searchUrl, inputs).then((res) => {
+      setRoutes(res.data);
+      setTotalPages(res.totalPages);
+      setCurrentPage(1);
+      setSortConfig({ key: "", direction: null });
     });
   }, []);
 

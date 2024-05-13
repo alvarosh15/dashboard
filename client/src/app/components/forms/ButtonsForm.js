@@ -1,9 +1,4 @@
-export default function ButtonsForm({
-  clearInputs,
-  setInputs,
-  inputs,
-  handleSearch,
-}) {
+export default function ButtonsForm({ clearInputs, setInputs, inputs }) {
   const handleLimitChange = (event) => {
     const newLimit = event.target.value;
     setInputs((prevInputs) => ({

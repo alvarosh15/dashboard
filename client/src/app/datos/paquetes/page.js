@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { getDict } from "../../utils/dataFetch";
 import PackagesForm from "../../components/forms/PackagesForm";
 import TableWithPages from "../../components/table/TableWithPages";
+import { usePackagesInputs } from "../../context/ContextProvider";
 
 export default function PackagesPage() {
   const [packages, setPackages] = useState([]);
@@ -11,23 +12,8 @@ export default function PackagesPage() {
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [sortConfig, setSortConfig] = useState({ key: "", direction: null });
-  const [inputs, setInputs] = useState({
-    id: "",
-    state: [],
-    startTimeWindow: "",
-    endTimeWindow: "",
-    lowPlannedServiceTime: "",
-    highPlannedServiceTime: "",
-    minDepth: "",
-    maxDepth: "",
-    minHeight: "",
-    maxHeight: "",
-    minWidth: "",
-    maxWidth: "",
-    routeId: "",
-    stopId: "",
-    limit: 20,
-  });
+  const { packagesInputs: inputs, setPackagesInputs: setInputs } =
+    usePackagesInputs();
   const url = `${process.env.NEXT_PUBLIC_API_URL}/api/packages?`;
 
   useEffect(() => {

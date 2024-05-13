@@ -1,4 +1,3 @@
-"use client";
 import Pagination from "./Pagination.js";
 import Table from "./Table.js";
 

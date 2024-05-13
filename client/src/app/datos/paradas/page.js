@@ -3,6 +3,7 @@ import TableWithPages from "../../components/table/TableWithPages";
 import StopsForm from "../../components/forms/StopsForm";
 import { useState, useEffect } from "react";
 import { getDict } from "../../utils/dataFetch";
+import { useStopsInputs } from "../../context/ContextProvider";
 
 export default function ParadasPage() {
   const [stops, setStops] = useState([]);
@@ -11,20 +12,7 @@ export default function ParadasPage() {
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [sortConfig, setSortConfig] = useState({ key: "", direction: null });
-  const [inputs, setInputs] = useState({
-    routeId: "",
-    id: "",
-    lowLatitude: "",
-    highLatitude: "",
-    lowLongitude: "",
-    highLongitude: "",
-    type: [],
-    zoneId: "",
-    posicion: "",
-    lowTimeToNext: "",
-    highTimeToNext: "",
-    limit: 20,
-  });
+  const { stopsInputs: inputs, setStopsInputs: setInputs } = useStopsInputs();
   const url = `${process.env.NEXT_PUBLIC_API_URL}/api/stops?`;
 
   useEffect(() => {
