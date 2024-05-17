@@ -1,3 +1,5 @@
+import axiosInstance from "./axiosInstance";
+
 const dict_scores = {
   High: "Alta",
   Medium: "Media",
@@ -82,4 +84,21 @@ export async function numberOfRoutesByCapacity(city) {
   const y = x.map((date) => data[date]);
   let aux = { x, y };
   return aux;
+}
+
+export async function getFavoritesCharts() {
+  try {
+    console.log("ESTAMOS OBTENIENDO LAS GRAFICAS DE FAVORITOS");
+    const response = await axiosInstance.get("/api/favorites/", {
+      cache: "no-store",
+    });
+    const data = response.data;
+    console.log("Data fetched:", data);
+    const favorites = data.favorites;
+    console.log("Favorites:", favorites);
+    return favorites;
+  } catch (error) {
+    console.error("Error fetching favorites:", error);
+    throw error;
+  }
 }

@@ -15,7 +15,9 @@ export default function MapPage() {
 
   useEffect(() => {
     if (activeId.length === 0) return;
-    getLocAndLatFromId(activeId).then((data) => setData(data));
+    getLocAndLatFromId(activeId).then((data) => {
+      setData(data);
+    });
   }, [activeId]);
 
   const addRoute = (e) => {

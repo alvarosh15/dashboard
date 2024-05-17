@@ -1,9 +1,56 @@
 "use client";
+import { signIn, useSession } from "next-auth/react";
 
-export default function Bookmark() {
+export default function Bookmark({ config }) {
+  const { data: session } = useSession();
+
+  async function addFavorite({ config }) {
+    if (!session) {
+      signIn();
+      return;
+    }
+
+    console.log(config);
+    console.log({
+      user_id: session.user.id,
+      size: config.size,
+      type: config.type,
+      title: config.title,
+      color_palette: config.colorPalette,
+      data_config: config.dataConfig,
+      layout_config: config.layoutConfig,
+      data_fetcher: config.dataFetcher,
+    });
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/favorites`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user_id: session.user.id,
+          size: config.size,
+          type: config.type,
+          title: config.title,
+          color_palette: config.colorPalette,
+          data_config: config.dataConfig,
+          layout_config: config.layoutConfig,
+          data_fetcher: config.dataFetcher,
+        }),
+      }
+    );
+
+    if (response.ok) {
+      console.log("Chart added to favorites");
+    } else {
+      console.error("Failed to add chart to favorites");
+    }
+  }
+
   return (
     <span
-      onClick={() => console.log("HOLA")}
+      onClick={() => addFavorite(config)}
       className="absolute cursor-pointer hidden text-sky-800 bg-sky-100 rounded-md p-1 z-50 m-1 group-hover:block"
     >
       <svg

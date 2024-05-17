@@ -1,6 +1,3 @@
-"use client";
-
-import { useEffect, useState } from "react";
 import { OneByOne, TwoByOne, ThreeByOne } from "@/app/components/charts/Boxes";
 import { Pie, Bar } from "@/app/components/charts/Charts";
 import Bookmark from "./Bookmark";
@@ -31,22 +28,9 @@ const dataFetcherMapping = {
   numberOfRoutesByCapacity: numberOfRoutesByCapacity,
 };
 
-export default function DynamicChart({ config }) {
-  const [data, setData] = useState(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const dataFetcher = dataFetcherMapping[config.dataFetcher];
-      const fetchedData = await dataFetcher(config.city);
-      setData(fetchedData);
-    };
-
-    fetchData();
-  }, [config.dataFetcher, config.city]);
-
-  if (!data) {
-    return <div>Loading...</div>;
-  }
+export default async function DynamicChart({ config }) {
+  const dataFetcher = dataFetcherMapping[config.dataFetcher];
+  const data = await dataFetcher(config.city);
 
   const size = config.size;
   const SizeComponent = sizeMapping[size];

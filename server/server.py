@@ -2,9 +2,14 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 import mysql.connector
 from datetime import date, timedelta, datetime
+import json
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 
 app = Flask(__name__)
 CORS(app)
+app.config['JWT_SECRET_KEY'] = 'your_secret_key_here'  # Cambia esto por una clave secreta segura
+#app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(days=1)
+jwt = JWTManager(app)
 
 def get_db_connection():
     conn = mysql.connector.connect(
@@ -661,6 +666,115 @@ def return_packages():
     'data': packages_list,
     'totalPages': total_pages
     })
+
+@app.route('/auth/googlee', methods=['POST'])
+def google_auth_old():
+    data = request.json
+    user_info = data.get('user')
+    google_id = user_info['id']
+    name = user_info['name']
+    email = user_info['email']
+    image_url = user_info['image']
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "SELECT id FROM user WHERE google_id = %s",
+        (google_id,)
+    )
+    user = cursor.fetchone()
+
+    if user is None:
+        cursor.execute(
+            "INSERT INTO user (google_id, name, email, image_url) VALUES (%s, %s, %s, %s)",
+            (google_id, name, email, image_url)
+        )
+        conn.commit()
+        user_id = cursor.lastrowid
+    else:
+        user_id = user[0]
+
+    cursor.close()
+    conn.close()
+
+    return jsonify({"user_id": user_id}), 200
+
+@app.route('/auth/google', methods=['POST'])
+def google_auth(): 
+    data = request.json
+    user = data.get("user")
+
+    if not user:
+        return jsonify({"error": "Account information is required"}), 400
+
+    google_id = user['id']
+    name = user['name']
+    email = user['email']
+    image_url = user['image']
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "SELECT id FROM user WHERE google_id = %s",
+        (google_id,)
+    )
+    existing_user = cursor.fetchone()
+
+    if existing_user is None:
+        cursor.execute(
+            "INSERT INTO user (google_id, name, email, image_url) VALUES (%s, %s, %s, %s)",
+            (google_id, name, email, image_url)
+        )
+        conn.commit()
+        user_id = cursor.lastrowid
+    else:
+        user_id = existing_user[0]
+
+    cursor.close()
+    conn.close()
+
+    # Generar el JWT usando user_id de la base de datos
+    access_token = create_access_token(identity={"id": user_id, "name": name, "email": email})
+    print(access_token)
+    return jsonify({"token": access_token})
+
+
+@app.route('/api/favorites/', methods=['GET'])
+@jwt_required()
+def get_favorites():
+    user_id = get_jwt_identity()['id']
+    print(user_id)
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    
+    cursor.execute(
+        "SELECT * FROM favorites WHERE user_id = %s ORDER BY added_at DESC",
+        (user_id,)
+    )
+    favorites = cursor.fetchall()
+    
+    cursor.close()
+    conn.close()
+
+    configs = []
+
+    for favorite in favorites:
+        config = {
+            'id': favorite['id'],
+            'size': favorite['size'],
+            'type': favorite['type'],
+            'title': favorite['title'],
+            'colorPalette': favorite['color_palette'],
+            'dataConfig': json.loads(favorite['data_config'] or '{}'),
+            'layoutConfig': json.loads(favorite['layout_config'] or '{}'),
+            'dataFetcher': (favorite['data_fetcher'])
+        }
+        configs.append(config)
+
+    return jsonify({'favorites': configs}), 200
+
 
 
 
