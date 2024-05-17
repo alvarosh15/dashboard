@@ -20,6 +20,7 @@ def get_db_connection():
     )
     return conn
 
+'''
 @app.route("/api/routes_by_capacity", methods=['GET'])
 def routes_by_capacity():
     city = request.args.get('city')
@@ -54,7 +55,9 @@ def routes_by_capacity():
     # Preparamos los datos para la respuesta
     routes_by_capacity = {row[0]: row[1] for row in results}
     return jsonify(routes_by_capacity)
+'''
 
+'''
 @app.route("/api/packages_by_status", methods=['GET'])
 def packages_by_status():
     city = request.args.get('city')
@@ -90,7 +93,9 @@ def packages_by_status():
     # Preparar los datos para la respuesta
     package_by_status = {row[0]: row[1] for row in results}
     return jsonify(package_by_status)
+'''
 
+'''
 @app.route("/api/stops/coordinates", methods=['GET'])
 def get_stops_coordinates():
     route_id = request.args.get('id')
@@ -114,7 +119,9 @@ def get_stops_coordinates():
 
     coordinates = {"lat": lat, "lon": lon}
     return jsonify(coordinates)
+'''
 
+'''
 @app.route("/api/routes_by_month", methods=['GET'])
 def routes_by_month():
     city = request.args.get('city')
@@ -149,7 +156,9 @@ def routes_by_month():
     # Preparamos los datos para la respuesta
     routes_by_day = {row[0]: row[1] for row in results}
     return jsonify(routes_by_day)
-
+'''
+    
+'''
 @app.route("/api/routes_by_day", methods=['GET'])
 def routes_by_day():
     city = request.args.get('city')
@@ -184,7 +193,9 @@ def routes_by_day():
     # Preparamos los datos para la respuesta
     routes_by_day = {row[0].strftime("%Y-%m-%d"): row[1] for row in results}
     return jsonify(routes_by_day)
+'''
 
+'''
 @app.route("/api/score_counts", methods=['GET'])
 def score_counts():
     city = request.args.get('city')
@@ -220,7 +231,9 @@ def score_counts():
     # Preparar los datos para la respuesta
     score_counts = {row[0]: row[1] for row in results}
     return jsonify(score_counts)
+'''
 
+'''
 @app.route("/api/scores", methods=['GET'])
 def return_scores():
     conn = get_db_connection()
@@ -238,7 +251,8 @@ def return_scores():
         scores_list.append(score_dict)
 
     return jsonify(scores_list)
-
+'''
+'''
 @app.route("/api/types", methods=['GET'])
 def return_types():
     conn = get_db_connection()
@@ -256,7 +270,8 @@ def return_types():
         types_list.append(type_dict)
 
     return jsonify(types_list)
-
+'''
+'''
 @app.route("/api/status", methods=['GET'])
 def return_status():
     conn = get_db_connection()
@@ -274,7 +289,9 @@ def return_status():
         status_list.append(state_dict)
 
     return jsonify(status_list)
+'''
 
+'''
 @app.route("/api/stops", methods=['GET'])
 def return_stops():
     conn = get_db_connection()
@@ -365,7 +382,9 @@ def return_stops():
     conn.close()
 
     return jsonify({"data": stops_list, "totalPages": total_pages})
+'''
 
+'''
 @app.route("/api/routes/station_codes", methods=['GET'])
 def get_station_codes():
     conn = get_db_connection()
@@ -375,7 +394,9 @@ def get_station_codes():
     cursor.close()
     conn.close()
     return jsonify([code[0] for code in station_codes])
+'''
 
+'''
 @app.route("/api/routes", methods=['GET'])
 def return_route():
     conn = get_db_connection()
@@ -519,7 +540,9 @@ def return_route():
     'data': routes_list,
     'totalPages': total_pages
     })
+'''
 
+'''
 @app.route("/api/packages", methods=['GET'])
 def return_packages():
     conn = get_db_connection()
@@ -666,47 +689,16 @@ def return_packages():
     'data': packages_list,
     'totalPages': total_pages
     })
+'''
 
-@app.route('/auth/googlee', methods=['POST'])
-def google_auth_old():
-    data = request.json
-    user_info = data.get('user')
-    google_id = user_info['id']
-    name = user_info['name']
-    email = user_info['email']
-    image_url = user_info['image']
-
-    conn = get_db_connection()
-    cursor = conn.cursor()
-
-    cursor.execute(
-        "SELECT id FROM user WHERE google_id = %s",
-        (google_id,)
-    )
-    user = cursor.fetchone()
-
-    if user is None:
-        cursor.execute(
-            "INSERT INTO user (google_id, name, email, image_url) VALUES (%s, %s, %s, %s)",
-            (google_id, name, email, image_url)
-        )
-        conn.commit()
-        user_id = cursor.lastrowid
-    else:
-        user_id = user[0]
-
-    cursor.close()
-    conn.close()
-
-    return jsonify({"user_id": user_id}), 200
-
+'''
 @app.route('/auth/google', methods=['POST'])
 def google_auth(): 
     data = request.json
     user = data.get("user")
 
     if not user:
-        return jsonify({"error": "Account information is required"}), 400
+        return jsonify({"error": "User information is required"}), 400
 
     google_id = user['id']
     name = user['name']
@@ -739,8 +731,9 @@ def google_auth():
     access_token = create_access_token(identity={"id": user_id, "name": name, "email": email})
     print(access_token)
     return jsonify({"token": access_token})
+'''
 
-
+'''
 @app.route('/api/favorites/', methods=['GET'])
 @jwt_required()
 def get_favorites():
@@ -774,7 +767,7 @@ def get_favorites():
         configs.append(config)
 
     return jsonify({'favorites': configs}), 200
-
+'''
 
 
 
