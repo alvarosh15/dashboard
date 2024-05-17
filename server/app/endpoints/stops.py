@@ -60,9 +60,9 @@ def return_stops():
 
         if sort_key and sort_direction:
             sort_column = getattr(Stop, sort_key)
-            if sort_direction == 'asc':
+            if sort_direction == 'ASC':
                 query = query.order_by(sort_column.asc())
-            elif sort_direction == 'desc':
+            elif sort_direction == 'DESC':
                 query = query.order_by(sort_column.desc())
 
         stops = query.paginate(page=page, per_page=limit, error_out=False).items

@@ -30,6 +30,7 @@ def google_auth():
             user_id = existing_user.Id
 
         access_token = create_access_token(identity={"id": user_id, "name": name, "email": email})
+        print("Access token:", access_token)
         return jsonify({"AccessToken": access_token}), 200
     except Exception as e:
         return jsonify({"message": "Internal Server Error"}), 500

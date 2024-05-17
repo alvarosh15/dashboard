@@ -10,7 +10,7 @@ export async function getJWT(user) {
     );
 
     if (response.status === 200) {
-      return response.data.token;
+      return response.data.AccessToken;
     } else {
       throw new Error("Failed to obtain JWT");
     }

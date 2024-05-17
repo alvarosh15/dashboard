@@ -92,9 +92,9 @@ def return_route():
 
         if sort_key and sort_direction:
             sort_column = getattr(Route, sort_key)
-            if sort_direction == 'asc':
+            if sort_direction == 'ASC':
                 query = query.order_by(sort_column.asc())
-            elif sort_direction == 'desc':
+            elif sort_direction == 'DESC':
                 query = query.order_by(sort_column.desc())
 
         routes = query.paginate(page=page, per_page=limit, error_out=False).items
@@ -106,7 +106,6 @@ def return_route():
         return jsonify({'data': routes_list, 'totalPages': total_pages}), 200
     except Exception as e:
         return jsonify({"message": "Internal Server Error"}), 500
-
 
 @route_bp.route('/routes/station_codes', methods=['GET'])
 def get_station_codes():

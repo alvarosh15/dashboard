@@ -1,17 +1,16 @@
 "use client";
-import { getFavoritesCharts } from "@/app/utils/statistics";
+import { getLikedCharts } from "@/app/utils/statistics";
 import { useEffect, useState } from "react";
 import DynamicChart from "@/app/components/charts/DynamicChart";
 
-export default function FavoritesCharts({ id }) {
+export default function LikedCharts({ id }) {
   const [charts, setCharts] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await getFavoritesCharts();
+        const data = await getLikedCharts();
         setCharts(data);
-        console.log("Fetched data:", data);
       } catch (error) {
         console.error("Failed to fetch charts:", error);
       }
@@ -19,10 +18,6 @@ export default function FavoritesCharts({ id }) {
 
     fetchData();
   }, [id]);
-
-  useEffect(() => {
-    console.log("Charts state updated:", charts);
-  }, [charts]);
 
   return (
     <div className="flex flex-col w-full lg:flex-row lg:flex-wrap *:p-1 *:h-72">

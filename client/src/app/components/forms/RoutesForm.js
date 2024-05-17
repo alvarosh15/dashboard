@@ -35,7 +35,7 @@ export default function RoutesForm({
 
   const handleSearch = (e) => {
     e.preventDefault();
-    let url = `${process.env.NEXT_PUBLIC_API_URL}/api/routes?`;
+    let url = `${process.env.NEXT_PUBLIC_API_URL}/routes?`;
     search(url, inputs).then((res) => {
       setRoutes(res.data);
       setTotalPages(res.totalPages);

@@ -103,9 +103,9 @@ def return_packages():
 
         if sort_key and sort_direction:
             sort_column = getattr(Package, sort_key)
-            if sort_direction == 'asc':
+            if sort_direction == 'ASC':
                 query = query.order_by(sort_column.asc())
-            elif sort_direction == 'desc':
+            elif sort_direction == 'DESC':
                 query = query.order_by(sort_column.desc())
 
         packages = query.paginate(page=page, per_page=limit, error_out=False).items

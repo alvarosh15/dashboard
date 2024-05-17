@@ -14,12 +14,12 @@ const dict_status = {
 };
 
 export async function numberOfRoutesByScore(city) {
-  let url = `${process.env.NEXT_PUBLIC_API_URL}/api/score_counts?`;
+  let url = `${process.env.NEXT_PUBLIC_API_URL}/score_counts?`;
   if (city) {
     url += `city=${city}`;
   }
   const res = await fetch(url, { cache: "no-store" });
-  const data = await res.json();
+  const data = await res.json().then((json) => json.data);
 
   let labels = Object.keys(data);
   const values = labels.map((label) => data[label]);
@@ -31,12 +31,12 @@ export async function numberOfRoutesByScore(city) {
 }
 
 export async function numberOfRoutesByDay(city) {
-  let url = `${process.env.NEXT_PUBLIC_API_URL}/api/routes_by_day?`;
+  let url = `${process.env.NEXT_PUBLIC_API_URL}/routes_by_day?`;
   if (city) {
     url += `city=${city}`;
   }
   const res = await fetch(url, { cache: "no-store" });
-  const data = await res.json();
+  const data = await res.json().then((json) => json.data);
   const x = Object.keys(data);
   const y = x.map((date) => data[date]);
   let aux = { x, y };
@@ -44,12 +44,12 @@ export async function numberOfRoutesByDay(city) {
 }
 
 export async function numberOfRoutesByMonth(city) {
-  let url = `${process.env.NEXT_PUBLIC_API_URL}/api/routes_by_month?`;
+  let url = `${process.env.NEXT_PUBLIC_API_URL}/routes_by_month?`;
   if (city) {
     url += `city=${city}`;
   }
   const res = await fetch(url, { cache: "no-store" });
-  const data = await res.json();
+  const data = await res.json().then((json) => json.data);
   const x = Object.keys(data);
   const y = x.map((date) => data[date]);
   let aux = { x, y };
@@ -57,12 +57,12 @@ export async function numberOfRoutesByMonth(city) {
 }
 
 export async function numberOfPackagesByStatus(city) {
-  let url = `${process.env.NEXT_PUBLIC_API_URL}/api/packages_by_status?`;
+  let url = `${process.env.NEXT_PUBLIC_API_URL}/packages_by_status?`;
   if (city) {
     url += `city=${city}`;
   }
   const res = await fetch(url, { cache: "no-store" });
-  const data = await res.json();
+  const data = await res.json().then((json) => json.data);
 
   let labels = Object.keys(data);
   const values = labels.map((label) => data[label]);
@@ -74,31 +74,27 @@ export async function numberOfPackagesByStatus(city) {
 }
 
 export async function numberOfRoutesByCapacity(city) {
-  let url = `${process.env.NEXT_PUBLIC_API_URL}/api/routes_by_capacity?`;
+  let url = `${process.env.NEXT_PUBLIC_API_URL}/routes_by_capacity?`;
   if (city) {
     url += `city=${city}`;
   }
   const res = await fetch(url, { cache: "no-store" });
-  const data = await res.json();
+  const data = await res.json().then((json) => json.data);
   const x = Object.keys(data);
   const y = x.map((date) => data[date]);
   let aux = { x, y };
   return aux;
 }
 
-export async function getFavoritesCharts() {
+export async function getLikedCharts() {
   try {
-    console.log("ESTAMOS OBTENIENDO LAS GRAFICAS DE FAVORITOS");
-    const response = await axiosInstance.get("/api/favorites/", {
+    const response = await axiosInstance.get("/liked_charts", {
       cache: "no-store",
     });
-    const data = response.data;
-    console.log("Data fetched:", data);
-    const favorites = data.favorites;
-    console.log("Favorites:", favorites);
-    return favorites;
+    const json = response.data;
+    const liked = json.data;
+    return liked;
   } catch (error) {
-    console.error("Error fetching favorites:", error);
     throw error;
   }
 }

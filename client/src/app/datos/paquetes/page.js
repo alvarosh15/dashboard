@@ -14,10 +14,10 @@ export default function PackagesPage() {
   const [sortConfig, setSortConfig] = useState({ key: "", direction: null });
   const { packagesInputs: inputs, setPackagesInputs: setInputs } =
     usePackagesInputs();
-  const url = `${process.env.NEXT_PUBLIC_API_URL}/api/packages?`;
+  const url = `${process.env.NEXT_PUBLIC_API_URL}/packages?`;
 
   useEffect(() => {
-    let url = `${process.env.NEXT_PUBLIC_API_URL}/api/status`;
+    let url = `${process.env.NEXT_PUBLIC_API_URL}/status`;
     let dict_status = {
       DELIVERY_ATTEMPTED: "Intento de entrega",
       DELIVERED: "Entregado",

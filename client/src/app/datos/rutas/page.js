@@ -15,10 +15,10 @@ export default function RutasPage() {
   const [stationCodes, setStationCodes] = useState([]);
   const { routesInputs: inputs, setRoutesInputs: setInputs } =
     useRoutesInputs();
-  const url = `${process.env.NEXT_PUBLIC_API_URL}/api/routes?`;
+  const url = `${process.env.NEXT_PUBLIC_API_URL}/routes?`;
 
   useEffect(() => {
-    let scoreUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/scores`;
+    let scoreUrl = `${process.env.NEXT_PUBLIC_API_URL}/scores`;
     let dict_scores = {
       High: "Alta",
       Medium: "Media",
@@ -31,11 +31,11 @@ export default function RutasPage() {
       }
       setScores(data);
     });
-    getStationCodes().then((data) => {
-      setStationCodes(data);
+    getStationCodes().then((res) => {
+      setStationCodes(res.data);
     });
 
-    let searchUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/routes?`;
+    let searchUrl = `${process.env.NEXT_PUBLIC_API_URL}/routes?`;
     search(searchUrl, inputs).then((res) => {
       setRoutes(res.data);
       setTotalPages(res.totalPages);

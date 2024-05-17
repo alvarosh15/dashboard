@@ -1,5 +1,6 @@
 "use client";
 import { signIn, useSession } from "next-auth/react";
+import axiosInstance from "@/app/utils/axiosInstance";
 
 export default function Bookmark({ config }) {
   const { data: session } = useSession();
@@ -10,41 +11,28 @@ export default function Bookmark({ config }) {
       return;
     }
 
-    console.log(config);
-    console.log({
-      user_id: session.user.id,
-      size: config.size,
-      type: config.type,
-      title: config.title,
-      color_palette: config.colorPalette,
-      data_config: config.dataConfig,
-      layout_config: config.layoutConfig,
-      data_fetcher: config.dataFetcher,
-    });
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/favorites`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          user_id: session.user.id,
+    try {
+      const response = await axiosInstance.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/liked_charts`,
+        {
           size: config.size,
           type: config.type,
           title: config.title,
-          color_palette: config.colorPalette,
-          data_config: config.dataConfig,
-          layout_config: config.layoutConfig,
-          data_fetcher: config.dataFetcher,
-        }),
-      }
-    );
+          colorPalette: config.colorPalette,
+          dataConfig: config.dataConfig,
+          layoutConfig: config.layoutConfig,
+          dataFetcher: config.dataFetcher,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-    if (response.ok) {
-      console.log("Chart added to favorites");
-    } else {
-      console.error("Failed to add chart to favorites");
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error adding favorite:", error);
     }
   }
 

@@ -1,5 +1,6 @@
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask import Blueprint, jsonify, request
+from sqlalchemy import desc
 from app.models import Route
 from app.models import Package
 from app.models import Status
@@ -20,14 +21,13 @@ def get_liked_charts():
         configs = []
         for chart in liked_charts:
             config = {
-                'Id': chart.Id,
-                'Size': chart.Size,
-                'Type': chart.Type,
-                'Title': chart.Title,
-                'ColorPalette': chart.ColorPalette.get('Colors', []),
-                'DataConfig': chart.DataConfig,
-                'LayoutConfig': chart.LayoutConfig,
-                'DataFetcher': chart.DataFetcher
+                'size': chart.Size,
+                'type': chart.Type,
+                'title': chart.Title,
+                'colorPalette': chart.ColorPalette.get('Colors', []),
+                'dataConfig': chart.DataConfig,
+                'layoutConfig': chart.LayoutConfig,
+                'dataFetcher': chart.DataFetcher
             }
             configs.append(config)
 
@@ -106,7 +106,7 @@ def packages_by_status():
             'Austin': 'DAU'
         }
 
-        query = db.session.query(Status.StatusName, db.func.count(Package.StatusId)).outerjoin(Status, Package.StatusId == Status.StatusId).group_by(Status.StatusName)
+        query = db.session.query(Status.StatusName, db.func.count(Package.StatusId)).outerjoin(Status, Package.StatusId == Status.StatusId).group_by(Status.StatusName).order_by(db.func.count(Package.StatusId))
 
         if city:
             query = query.join(Route, Package.RouteId == Route.RouteId).filter(Route.StationCode.like(f"{city_station_code[city]}%"))

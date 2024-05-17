@@ -37,6 +37,7 @@ export default function DynamicChart({ config }) {
   useEffect(() => {
     const fetchData = async () => {
       const dataFetcher = dataFetcherMapping[config.dataFetcher];
+      console.log("config.city", config.city);
       const fetchedData = await dataFetcher(config.city);
       setData(fetchedData);
     };
@@ -55,7 +56,10 @@ export default function DynamicChart({ config }) {
   const Chart = typeMapping[type];
 
   const title = config.title;
-  const colorPalette = config.colorPalette;
+  let colorPalette = config.colorPalette;
+  if (colorPalette.length === 1) {
+    colorPalette = colorPalette[0];
+  }
   const dataConfig = config.dataConfig;
   const layoutConfig = config.layoutConfig;
 

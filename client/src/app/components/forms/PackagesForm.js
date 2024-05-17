@@ -38,7 +38,7 @@ export default function PackagesForm({
 
   const handleSearch = (e) => {
     e.preventDefault();
-    let url = `${process.env.NEXT_PUBLIC_API_URL}/api/packages?`;
+    let url = `${process.env.NEXT_PUBLIC_API_URL}/packages?`;
     search(url, inputs).then((res) => {
       setPackages(res.data);
       setTotalPages(res.totalPages);

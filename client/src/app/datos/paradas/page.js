@@ -13,10 +13,10 @@ export default function ParadasPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortConfig, setSortConfig] = useState({ key: "", direction: null });
   const { stopsInputs: inputs, setStopsInputs: setInputs } = useStopsInputs();
-  const url = `${process.env.NEXT_PUBLIC_API_URL}/api/stops?`;
+  const url = `${process.env.NEXT_PUBLIC_API_URL}/stops?`;
 
   useEffect(() => {
-    let url = `${process.env.NEXT_PUBLIC_API_URL}/api/types`;
+    let url = `${process.env.NEXT_PUBLIC_API_URL}/types`;
     let dict_types = {
       Station: "Almacen",
       Dropoff: "Entrega",

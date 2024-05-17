@@ -22,7 +22,7 @@ export async function search(url, inputs, sort = null, page = 1) {
 
 export async function getStationCodes() {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/routes/station_codes`
+    `${process.env.NEXT_PUBLIC_API_URL}/routes/station_codes`
   );
   const data = await res.json();
   return data;
@@ -30,7 +30,7 @@ export async function getStationCodes() {
 
 export async function getDict(url, key) {
   const res = await fetch(url);
-  const data = await res.json();
+  const data = await res.json().then((json) => json.data);
   const dict = data.reduce((acc, elem) => {
     acc[elem[`${key}Id`]] = elem[`${key}Name`];
     return acc;
@@ -40,10 +40,9 @@ export async function getDict(url, key) {
 
 export async function getLocAndLatFromId(id) {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/stops/coordinates?id=${id}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/route/stops/coordinates?id=${id}`,
     { cache: "no-store" }
   );
-  const coordinates = await response.json();
-  console.log(coordinates);
+  const coordinates = await response.json().then((json) => json.data);
   return coordinates;
 }

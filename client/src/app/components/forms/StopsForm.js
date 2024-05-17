@@ -35,7 +35,7 @@ export default function StopsForm({
   const handleSearch = (e) => {
     e.preventDefault();
 
-    let url = `${process.env.NEXT_PUBLIC_API_URL}/api/stops?`;
+    let url = `${process.env.NEXT_PUBLIC_API_URL}/stops?`;
     search(url, inputs).then((res) => {
       setStops(res.data);
       setTotalPages(res.totalPages);
