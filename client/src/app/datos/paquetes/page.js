@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { getDict } from "../../utils/dataFetch";
+import { search, getDict } from "../../utils/dataFetch";
 import PackagesForm from "../../components/forms/PackagesForm";
 import TableWithPages from "../../components/table/TableWithPages";
 import { usePackagesInputs } from "../../context/ContextProvider";
@@ -29,6 +29,14 @@ export default function PackagesPage() {
         data[key] = dict_status[data[key]];
       }
       setStatus(data);
+    });
+
+    let searchUrl = `${process.env.NEXT_PUBLIC_API_URL}/packages?`;
+    search(searchUrl, inputs).then((res) => {
+      setPackages(res.data);
+      setTotalPages(res.totalPages);
+      setCurrentPage(1);
+      setSortConfig({ key: "", direction: null });
     });
   }, []);
 

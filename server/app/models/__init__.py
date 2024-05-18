@@ -7,3 +7,4 @@ from .package import Package
 from .transit_time import TransitTime
 from .user import User
 from .liked_charts import Liked
+from .history import History

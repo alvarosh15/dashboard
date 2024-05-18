@@ -7,6 +7,7 @@ from app.endpoints.packages import package_bp
 from app.endpoints.charts import charts_bp
 from app.endpoints.map import map_bp
 from app.endpoints.auth import auth_bp
+from app.endpoints.history import history_bp
 
 def register_blueprints(app):
     app.register_blueprint(score_bp)
@@ -18,4 +19,5 @@ def register_blueprints(app):
     app.register_blueprint(charts_bp)
     app.register_blueprint(map_bp)
     app.register_blueprint(auth_bp)
+    app.register_blueprint(history_bp)
     

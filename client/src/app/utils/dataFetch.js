@@ -1,3 +1,5 @@
+import axiosInstance from "./axiosInstance";
+
 export async function search(url, inputs, sort = null, page = 1) {
   Object.keys(inputs).forEach((key) => {
     if (Array.isArray(inputs[key])) {
@@ -18,6 +20,36 @@ export async function search(url, inputs, sort = null, page = 1) {
   let res = await fetch(url);
   let data = await res.json();
   return data;
+}
+
+export async function addSearchHistory(input, type) {
+  console.log(input);
+  try {
+    const response = await axiosInstance.post(
+      `${process.env.NEXT_PUBLIC_API_URL}/history`,
+      {
+        input,
+        type,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error al guardar el historial:", error);
+    throw error;
+  }
+}
+
+export async function getSearchHistory() {
+  try {
+    const response = await axiosInstance.get(
+      `${process.env.NEXT_PUBLIC_API_URL}/history`
+    );
+    const data = response.data;
+    return data;
+  } catch (error) {
+    console.error("Error al obtener el historial:", error);
+    throw error;
+  }
 }
 
 export async function getStationCodes() {

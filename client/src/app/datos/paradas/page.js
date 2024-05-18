@@ -2,7 +2,7 @@
 import TableWithPages from "../../components/table/TableWithPages";
 import StopsForm from "../../components/forms/StopsForm";
 import { useState, useEffect } from "react";
-import { getDict } from "../../utils/dataFetch";
+import { search, getDict } from "../../utils/dataFetch";
 import { useStopsInputs } from "../../context/ContextProvider";
 
 export default function ParadasPage() {
@@ -21,11 +21,20 @@ export default function ParadasPage() {
       Station: "Almacen",
       Dropoff: "Entrega",
     };
+
     getDict(url, "Type").then((data) => {
       for (const key in data) {
         data[key] = dict_types[data[key]];
       }
       setTypes(data);
+    });
+
+    let searchUrl = `${process.env.NEXT_PUBLIC_API_URL}/stops?`;
+    search(searchUrl, inputs).then((res) => {
+      setStops(res.data);
+      setTotalPages(res.totalPages);
+      setCurrentPage(1);
+      setSortConfig({ key: "", direction: null });
     });
   }, []);
 

@@ -1,44 +1,13 @@
 "use client";
-import { signIn, useSession } from "next-auth/react";
-import axiosInstance from "@/app/utils/axiosInstance";
+import { useSession } from "next-auth/react";
+import { addLikeChart } from "@/app/utils/statistics";
 
 export default function Bookmark({ config }) {
   const { data: session } = useSession();
 
-  async function addFavorite({ config }) {
-    if (!session) {
-      signIn();
-      return;
-    }
-
-    try {
-      const response = await axiosInstance.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/liked_charts`,
-        {
-          size: config.size,
-          type: config.type,
-          title: config.title,
-          colorPalette: config.colorPalette,
-          dataConfig: config.dataConfig,
-          layoutConfig: config.layoutConfig,
-          dataFetcher: config.dataFetcher,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      console.log(response.data);
-    } catch (error) {
-      console.error("Error adding favorite:", error);
-    }
-  }
-
   return (
     <span
-      onClick={() => addFavorite(config)}
+      onClick={() => addLikeChart(config)}
       className="absolute cursor-pointer hidden text-sky-800 bg-sky-100 rounded-md p-1 z-50 m-1 group-hover:block"
     >
       <svg

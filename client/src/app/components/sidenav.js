@@ -1,12 +1,17 @@
+"use client";
+import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
+import Image from "next/image";
 import ActiveLink from "./ActiveLink";
 
 export default function SideNav() {
+  const { data: session } = useSession();
+
   return (
     <div className="bg-slate-50 flex h-full flex-col px-3 py-3 md:px-2">
-      <div className="w-32 flex justify-center items-center text-sky-800 font-extrabold text-2xl md:w-full md:h-24">
+      <h1 className="w-32 flex justify-center items-center text-sky-800 font-extrabold text-3xl md:w-full md:h-24">
         Dashboard
-      </div>
+      </h1>
       <div className="flex grow flex-row justify-start space-x-2 md:flex-col md:space-x-0 md:space-y-2">
         <Link href="/">
           <ActiveLink text="Home">
@@ -64,6 +69,30 @@ export default function SideNav() {
             </svg>
           </ActiveLink>
         </Link>
+      </div>
+      <div className="mt-auto">
+        {session && (
+          <div className="p-4 flex flex-col items-center justify-center">
+            <div className="flex flex-row items-center justify-center space-x-2">
+              <Image
+                height={24}
+                width={24}
+                alt="User profile picture"
+                src={session.user.image}
+                className="w-6 h-6 rounded-full"
+              />
+              <p className="text-sm text-sky-800 font-medium">
+                {session.user.email}
+              </p>
+            </div>
+            <button
+              onClick={() => signOut()}
+              className="text-sky-800 font-light text-sm"
+            >
+              Cerrar sesión
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

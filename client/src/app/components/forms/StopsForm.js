@@ -1,7 +1,7 @@
 "use client";
 import Filter from "./Filter";
 import ButtonsForm from "./ButtonsForm";
-import { search } from "../../utils/dataFetch";
+import { search, addSearchHistory } from "../../utils/dataFetch";
 import NumberInput from "./NumberInput";
 
 export default function StopsForm({
@@ -42,6 +42,7 @@ export default function StopsForm({
       setCurrentPage(1);
       setSortConfig({ key: "", direction: null });
     });
+    addSearchHistory(inputs, "Stop");
   };
 
   const handleSelectChange = (event) => {

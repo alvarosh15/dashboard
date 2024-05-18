@@ -98,3 +98,29 @@ export async function getLikedCharts() {
     throw error;
   }
 }
+
+export async function addLikeChart({ config }) {
+  try {
+    const response = await axiosInstance.post(
+      `${process.env.NEXT_PUBLIC_API_URL}/liked_charts`,
+      {
+        size: config.size,
+        type: config.type,
+        title: config.title,
+        colorPalette: config.colorPalette,
+        dataConfig: config.dataConfig,
+        layoutConfig: config.layoutConfig,
+        dataFetcher: config.dataFetcher,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    console.log(response.data);
+  } catch (error) {
+    console.error("Error adding favorite:", error);
+  }
+}

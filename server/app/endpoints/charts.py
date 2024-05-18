@@ -65,9 +65,6 @@ def post_liked_chart():
 
         return jsonify({"message": "Liked chart saved successfully"}), 201
     except Exception as e:
-        print("--------")
-        print(e)
-        print("--------")
         return jsonify({"message": "Internal Server Error"}), 500
 
 @charts_bp.route('/routes_by_capacity', methods=['GET'])

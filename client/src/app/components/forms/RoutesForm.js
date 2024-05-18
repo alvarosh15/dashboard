@@ -1,6 +1,6 @@
 "use client";
 import Filter from "./Filter";
-import { search } from "../../utils/dataFetch";
+import { search, addSearchHistory } from "../../utils/dataFetch";
 import ButtonsForm from "./ButtonsForm";
 import IntervalInput from "./IntervalInput";
 import NumberInput from "./NumberInput";
@@ -42,6 +42,7 @@ export default function RoutesForm({
       setCurrentPage(1);
       setSortConfig({ key: "", direction: null });
     });
+    addSearchHistory(inputs, "Route");
   };
 
   const handleSelectChange = (event) => {

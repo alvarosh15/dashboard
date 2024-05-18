@@ -1,6 +1,6 @@
 "use client";
 import Filter from "./Filter";
-import { search } from "../../utils/dataFetch";
+import { search, addSearchHistory } from "../../utils/dataFetch";
 import ButtonsForm from "./ButtonsForm";
 import NumberInput from "./NumberInput";
 import IntervalInput from "./IntervalInput";
@@ -45,6 +45,7 @@ export default function PackagesForm({
       setCurrentPage(1);
       setSortConfig({ key: "", direction: null });
     });
+    addSearchHistory(inputs, "Package");
   };
 
   const handleSelectChange = (event) => {
