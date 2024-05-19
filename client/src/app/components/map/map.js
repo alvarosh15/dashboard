@@ -12,6 +12,7 @@ export default function Map({ data }) {
           ...data,
           type: "scattermapbox",
           mode: "markers",
+          text: data.type,
         },
       ]}
       config={{ mapboxAccessToken: process.env.NEXT_PUBLIC_MAPBOX_TOKEN }}

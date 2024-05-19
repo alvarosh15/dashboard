@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { OneByOne, TwoByOne, ThreeByOne } from "@/app/components/charts/Boxes";
-import { Pie, Bar } from "@/app/components/charts/Charts";
+import { Pie, Bar, Lines, Block } from "@/app/components/charts/Charts";
 import Bookmark from "./Bookmark";
 import DynamicChartSkeleton from "./DynamicChartSkeleton";
 import {
@@ -11,6 +11,9 @@ import {
   numberOfRoutesByMonth,
   numberOfPackagesByStatus,
   numberOfRoutesByCapacity,
+  numberOfRoutesByCity,
+  routesByDepartureHour,
+  avgPackagePerRoute,
 } from "@/app/utils/statistics";
 
 const sizeMapping = {
@@ -22,6 +25,8 @@ const sizeMapping = {
 const typeMapping = {
   pie: Pie,
   bar: Bar,
+  lines: Lines,
+  block: Block,
 };
 
 const dataFetcherMapping = {
@@ -30,6 +35,9 @@ const dataFetcherMapping = {
   numberOfRoutesByMonth: numberOfRoutesByMonth,
   numberOfPackagesByStatus: numberOfPackagesByStatus,
   numberOfRoutesByCapacity: numberOfRoutesByCapacity,
+  numberOfRoutesByCity: numberOfRoutesByCity,
+  routesByDepartureHour: routesByDepartureHour,
+  avgPackagePerRoute: avgPackagePerRoute,
 };
 
 export default function DynamicChart({ config, isLikedChart = false }) {
@@ -55,13 +63,14 @@ export default function DynamicChart({ config, isLikedChart = false }) {
   const type = config.type;
   const Chart = typeMapping[type];
 
-  const title = isLikedChart
-    ? config.city
-      ? `${config.city} - ${config.title}`
-      : `General - ${config.title}`
-    : config.title;
+  const title =
+    isLikedChart && config.type !== "block"
+      ? config.city
+        ? `${config.city} - ${config.title}`
+        : `General - ${config.title}`
+      : config.title;
   let colorPalette = config.colorPalette;
-  if (colorPalette.length === 1) {
+  if (colorPalette && colorPalette.length === 1) {
     colorPalette = colorPalette[0];
   }
   const dataConfig = config.dataConfig;

@@ -10,12 +10,32 @@
 }
 */
 
+const oneColor = "#F72585";
+const fourColors = ["#F72585", "#480CA8", "#7209B7", "E9E9E9"];
+
 export const cityCharts = [
   {
-    size: "2x1",
+    size: "1x1",
+    type: "block",
+    title: "Número medio de paquetes por ruta",
+    colorPalette: oneColor,
+    dataFetcher: "avgPackagePerRoute",
+  },
+  {
+    size: "1x1",
+    type: "bar",
+    title: "Número de salidas por hora",
+    colorPalette: oneColor,
+    layoutConfig: {
+      xaxis: { type: "category" },
+    },
+    dataFetcher: "routesByDepartureHour",
+  },
+  {
+    size: "1x1",
     type: "bar",
     title: "Número de rutas por capacidad",
-    colorPalette: "#F72585",
+    colorPalette: oneColor,
     layoutConfig: {
       xaxis: { type: "category" },
     },
@@ -28,28 +48,42 @@ export const cityCharts = [
     dataConfig: {
       hole: 0.5,
     },
-    colorPalette: ["#F72585", "#480CA8", "#7209B7", "E9E9E9"],
+    colorPalette: fourColors,
     dataFetcher: "numberOfPackagesByStatus",
   },
   {
     size: "1x1",
     type: "pie",
     title: "Puntuación de las rutas",
-    colorPalette: ["#F72585", "#480CA8", "#7209B7", "E9E9E9"],
+    colorPalette: fourColors,
     dataFetcher: "numberOfRoutesByScore",
   },
   {
-    size: "1x1",
+    size: "2x1",
     type: "bar",
     title: "Número de rutas por mes",
-    colorPalette: "#F72585",
+    colorPalette: oneColor,
     dataFetcher: "numberOfRoutesByMonth",
   },
   {
     size: "3x1",
     type: "bar",
     title: "Número de rutas por día",
-    colorPalette: "#F72585",
+    colorPalette: oneColor,
     dataFetcher: "numberOfRoutesByDay",
   },
+];
+
+export const generalCharts = [
+  {
+    size: "2x1",
+    type: "bar",
+    title: "Número de rutas por ciudad",
+    colorPalette: oneColor,
+    layoutConfig: {
+      xaxis: { type: "category" },
+    },
+    dataFetcher: "numberOfRoutesByCity",
+  },
+  ...cityCharts,
 ];

@@ -1,6 +1,7 @@
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask import Blueprint, jsonify, request
-from sqlalchemy import desc
+from sqlalchemy import desc, func, case
+from sqlalchemy.orm import aliased
 from app.models import Route
 from app.models import Package
 from app.models import Status
@@ -25,7 +26,7 @@ def get_liked_charts():
                 'type': chart.Type,
                 'title': chart.Title,
                 'city': chart.City,
-                'colorPalette': chart.ColorPalette.get('Colors', []),
+                'colorPalette': chart.ColorPalette.get('Colors', []) if chart.ColorPalette else [],
                 'dataConfig': chart.DataConfig,
                 'layoutConfig': chart.LayoutConfig,
                 'dataFetcher': chart.DataFetcher
@@ -187,5 +188,98 @@ def score_counts():
 
         score_counts = {row[0] if row[0] else 'Sin datos': row[1] for row in results}
         return jsonify({"data": score_counts}), 200
+    except Exception as e:
+        return jsonify({"message": "Internal Server Error"}), 500
+
+@charts_bp.route('/routes_by_city', methods=['GET'])
+def routes_by_city():
+    try:
+        query = db.session.query(
+            db.case(
+                (Route.StationCode.like('DAU%'), 'Austin'),
+                (Route.StationCode.like('DBO%'), 'Boston'),
+                (Route.StationCode.like('DLA%'), 'Los Angeles'),
+                (Route.StationCode.like('DCH%'), 'Chicago'),
+                (Route.StationCode.like('DSE%'), 'Seattle'),
+                else_='Unknown'
+            ).label('City'),
+            db.func.count(Route.RouteId).label('NumberOfRoutes')
+        ).group_by('City')
+
+        results = query.all()
+
+        routes_by_city = {row[0]: row[1] for row in results}
+
+        return jsonify({"data": routes_by_city}), 200
+    except Exception as e:
+        return jsonify({"message": "Internal Server Error"}), 500
+
+@charts_bp.route('/routes_by_departure_hour', methods=['GET'])
+def routes_by_departure_hour():
+    try:
+        city = request.args.get('city')
+        city_station_code = {
+            'Los Angeles': 'DLA',
+            'Seattle': 'DSE',
+            'Chicago': 'DCH',
+            'Boston': 'DBO',
+            'Austin': 'DAU'
+        }
+
+        query = db.session.query(
+            db.func.hour(Route.DepartureTime).label('Hour'),
+            db.func.count(Route.RouteId).label('Load')
+        ).group_by('Hour').order_by('Hour')
+
+        if city:
+            query = query.filter(Route.StationCode.like(f"{city_station_code[city]}%"))
+
+        results = query.all()
+
+        loads_by_hour = {row[0]: row[1] for row in results}
+        return jsonify({"data": loads_by_hour}), 200
+    except Exception as e:
+        return jsonify({"message": "Internal Server Error"}), 500
+
+@charts_bp.route('/avg_packages', methods=['GET']) 
+def avg_packages(): 
+    try:
+        city = request.args.get('city')
+        city_station_code = {
+            'Austin': 'DAU%',
+            'Boston': 'DBO%',
+            'Los Angeles': 'DLA%',
+            'Chicago': 'DCH%',
+            'Seattle': 'DSE%'
+        }
+
+        subquery = db.session.query(
+            Package.RouteId,
+            func.count(Package.PackageId).label('package_count')
+        ).group_by(Package.RouteId).subquery()
+
+        alias_subquery = aliased(subquery)
+
+        if city and city in city_station_code:
+            base_query = db.session.query(
+                func.avg(alias_subquery.c.package_count).label('AvgPackagesPerRoute')
+            ).select_from(Route).join(
+                alias_subquery, alias_subquery.c.RouteId == Route.RouteId
+            ).filter(Route.StationCode.like(city_station_code[city]))
+        else:
+            base_query = db.session.query(
+                func.avg(alias_subquery.c.package_count).label('AvgPackagesPerRoute')
+            ).select_from(Route).join(
+                alias_subquery, alias_subquery.c.RouteId == Route.RouteId
+            )
+
+        result = base_query.scalar()
+
+        if city and city in city_station_code:
+            response = {city: result}
+        else:
+            response = {"Todas las ciudades": result}
+
+        return jsonify({"data": response}), 200
     except Exception as e:
         return jsonify({"message": "Internal Server Error"}), 500

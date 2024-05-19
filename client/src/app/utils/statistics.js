@@ -125,3 +125,41 @@ export async function addLikeChart({ config }) {
     console.error("Error adding favorite:", error);
   }
 }
+
+export async function numberOfRoutesByCity() {
+  const url = `${process.env.NEXT_PUBLIC_API_URL}/routes_by_city`;
+  const res = await fetch(url, { cache: "no-store" });
+  const data = await res.json().then((json) => json.data);
+
+  const x = Object.keys(data);
+  const y = x.map((city) => data[city]);
+
+  let result = { x, y };
+  return result;
+}
+
+export async function routesByDepartureHour(city) {
+  let url = `${process.env.NEXT_PUBLIC_API_URL}/routes_by_departure_hour?`;
+  if (city) {
+    url += `city=${city}`;
+  }
+  const res = await fetch(url, { cache: "no-store" });
+  const data = await res.json().then((json) => json.data);
+
+  const x = Object.keys(data).map(Number);
+  const y = x.map((hour) => data[hour]);
+
+  let result = { x, y };
+  return result;
+}
+
+export async function avgPackagePerRoute(city) {
+  let url = `${process.env.NEXT_PUBLIC_API_URL}/avg_packages?`;
+  if (city) {
+    url += `city=${city}`;
+  }
+  const res = await fetch(url, { cache: "no-store" });
+  const data = await res.json().then((json) => json.data);
+
+  return data;
+}

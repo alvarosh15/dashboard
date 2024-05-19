@@ -28,7 +28,7 @@ export default function DynamicChartSkeleton({ size, type }) {
             style={{ height: "150px", width: "150px" }}
             className="animate-pulse flex items-center justify-center w-1/2 h-1/2 bg-gray-300 rounded-full"
           ></div>
-        ) : (
+        ) : type === "bar" ? (
           <div className="animate-pulse w-full h-full flex items-end justify-around space-x-2 p-4">
             {[...Array(numberOfBars)].map((_, i) => (
               <div
@@ -38,6 +38,8 @@ export default function DynamicChartSkeleton({ size, type }) {
               ></div>
             ))}
           </div>
+        ) : (
+          <div className="animate-pulse h-6 bg-gray-300 rounded w-3/6"></div>
         )}
       </div>
     </SizeComponent>
