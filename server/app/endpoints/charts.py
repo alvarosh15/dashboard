@@ -24,6 +24,7 @@ def get_liked_charts():
                 'size': chart.Size,
                 'type': chart.Type,
                 'title': chart.Title,
+                'city': chart.City,
                 'colorPalette': chart.ColorPalette.get('Colors', []),
                 'dataConfig': chart.DataConfig,
                 'layoutConfig': chart.LayoutConfig,
@@ -54,12 +55,13 @@ def post_liked_chart():
             Size=data.get('size'),
             Type=data.get('type'),
             Title=data.get('title', 'Sin titulo'),
+            City=data.get('city'),
             ColorPalette=color_palette,
             DataConfig=data.get('dataConfig', {}),
             LayoutConfig=data.get('layoutConfig', {}),
             DataFetcher=data.get('dataFetcher')
         )
-        
+        print(data.get('city'))
         db.session.add(new_liked)
         db.session.commit()
 

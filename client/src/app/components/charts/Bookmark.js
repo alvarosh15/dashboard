@@ -1,10 +1,6 @@
-"use client";
-import { useSession } from "next-auth/react";
 import { addLikeChart } from "@/app/utils/statistics";
 
 export default function Bookmark({ config }) {
-  const { data: session } = useSession();
-
   return (
     <span
       onClick={() => addLikeChart(config)}

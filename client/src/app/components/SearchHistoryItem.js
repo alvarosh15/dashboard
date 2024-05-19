@@ -66,7 +66,7 @@ export default function SearchHistoryItem({ item, type }) {
 
   return (
     <div className="flex flex-row items-center gap-2">
-      <div className="flex flex-row justify-center items-center gap-2">
+      <div className="flex flex-wrap justify-start items-center gap-2">
         {values.length > 0 ? (
           values.map((value, index) => (
             <div

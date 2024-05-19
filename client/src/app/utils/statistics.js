@@ -107,6 +107,7 @@ export async function addLikeChart({ config }) {
         size: config.size,
         type: config.type,
         title: config.title,
+        city: config.city,
         colorPalette: config.colorPalette,
         dataConfig: config.dataConfig,
         layoutConfig: config.layoutConfig,

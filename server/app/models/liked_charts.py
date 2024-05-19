@@ -9,6 +9,7 @@ class Liked(db.Model):
     Size = db.Column(db.String(255), nullable=False)
     Type = db.Column(db.String(255), nullable=False)
     Title = db.Column(db.String(255))
+    City = db.Column(db.String(255))
     ColorPalette = db.Column(JSON)
     DataConfig = db.Column(JSON)
     LayoutConfig = db.Column(JSON)

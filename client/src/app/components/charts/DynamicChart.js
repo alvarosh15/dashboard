@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { OneByOne, TwoByOne, ThreeByOne } from "@/app/components/charts/Boxes";
 import { Pie, Bar } from "@/app/components/charts/Charts";
 import Bookmark from "./Bookmark";
+import DynamicChartSkeleton from "./DynamicChartSkeleton";
 import {
   numberOfRoutesByScore,
   numberOfRoutesByDay,
@@ -31,13 +32,12 @@ const dataFetcherMapping = {
   numberOfRoutesByCapacity: numberOfRoutesByCapacity,
 };
 
-export default function DynamicChart({ config }) {
+export default function DynamicChart({ config, isLikedChart = false }) {
   const [data, setData] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       const dataFetcher = dataFetcherMapping[config.dataFetcher];
-      console.log("config.city", config.city);
       const fetchedData = await dataFetcher(config.city);
       setData(fetchedData);
     };
@@ -46,7 +46,7 @@ export default function DynamicChart({ config }) {
   }, [config.dataFetcher, config.city]);
 
   if (!data) {
-    return <div>Loading...</div>;
+    return <DynamicChartSkeleton size={config.size} type={config.type} />;
   }
 
   const size = config.size;
@@ -55,7 +55,11 @@ export default function DynamicChart({ config }) {
   const type = config.type;
   const Chart = typeMapping[type];
 
-  const title = config.title;
+  const title = isLikedChart
+    ? config.city
+      ? `${config.city} - ${config.title}`
+      : `General - ${config.title}`
+    : config.title;
   let colorPalette = config.colorPalette;
   if (colorPalette.length === 1) {
     colorPalette = colorPalette[0];

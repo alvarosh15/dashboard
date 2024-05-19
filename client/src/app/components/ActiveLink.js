@@ -13,7 +13,7 @@ export default function ActiveLink({ text, children }) {
   let bgColor = isActive ? "bg-sky-100" : "";
   let textColor = isActive ? "text-sky-800" : "text-slate-400";
 
-  if (path === "/" && normalizedText === "home") {
+  if (path === "/" && normalizedText === "inicio") {
     bgColor = "bg-sky-100";
     textColor = "text-sky-800";
   }

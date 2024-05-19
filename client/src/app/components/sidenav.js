@@ -14,7 +14,7 @@ export default function SideNav() {
       </h1>
       <div className="flex grow flex-row justify-start space-x-2 md:flex-col md:space-x-0 md:space-y-2">
         <Link href="/">
-          <ActiveLink text="Home">
+          <ActiveLink text="Inicio">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="16"
