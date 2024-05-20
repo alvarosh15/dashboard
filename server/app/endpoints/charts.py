@@ -106,17 +106,26 @@ def packages_by_status():
             'Austin': 'DAU'
         }
 
-        query = db.session.query(Status.StatusName, db.func.count(Package.StatusId)).outerjoin(Status, Package.StatusId == Status.StatusId).group_by(Status.StatusName).order_by(db.func.count(Package.StatusId))
+        query = db.session.query(
+            Status.StatusName.label('StatusName'), 
+            func.count().label('Count')
+        ).select_from(Package).outerjoin(
+            Status, Package.StatusId == Status.StatusId 
+        ).group_by(
+            Status.StatusName
+        )
 
         if city:
             query = query.join(Route, Package.RouteId == Route.RouteId).filter(Route.StationCode.like(f"{city_station_code[city]}%"))
 
         results = query.all()
+        print(results)
 
-        package_by_status = {row[0] if row[0] else 'Sin datos': row[1] for row in results}
+        package_by_status = {row.StatusName if row.StatusName else 'Sin datos': row.Count for row in results}
 
         return jsonify({"data": package_by_status}), 200
     except Exception as e:
+        print(e)
         return jsonify({"message": "Internal Server Error"}), 500
     
 @charts_bp.route('/routes_by_month', methods=['GET'])
@@ -179,16 +188,22 @@ def score_counts():
             'Austin': 'DAU'
         }
 
-        query = db.session.query(Score.ScoreName, db.func.count(Route.ScoreId)).outerjoin(Score, Route.ScoreId == Score.ScoreId).group_by(Score.ScoreName)
-
+        query = db.session.query(
+            Score.ScoreName.label('ScoreName'),
+            func.count().label('Count')
+        ).select_from(Route).outerjoin(Score, Route.ScoreId == Score.ScoreId).group_by(
+            Score.ScoreName
+        )
+        
         if city:
             query = query.filter(Route.StationCode.like(f"{city_station_code[city]}%"))
 
         results = query.all()
 
-        score_counts = {row[0] if row[0] else 'Sin datos': row[1] for row in results}
+        score_counts = {row.ScoreName if row.ScoreName else 'Sin datos': row.Count for row in results}
         return jsonify({"data": score_counts}), 200
     except Exception as e:
+        print(e)
         return jsonify({"message": "Internal Server Error"}), 500
 
 @charts_bp.route('/routes_by_city', methods=['GET'])

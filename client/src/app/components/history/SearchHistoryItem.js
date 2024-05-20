@@ -3,6 +3,8 @@ import { useRoutesInputs } from "@/app/context/ContextProvider";
 import { useStopsInputs } from "@/app/context/ContextProvider";
 import { usePackagesInputs } from "@/app/context/ContextProvider";
 import Link from "next/link";
+import DeleteItem from "./DeleteItem";
+import { deleteHistoryItem } from "@/app/utils/dataFetch";
 
 const keyDictionary = {
   startDate: "Fecha de inicio ≥",
@@ -29,7 +31,12 @@ const keyDictionary = {
   maxWidth: "Máxima anchura:",
 };
 
-export default function SearchHistoryItem({ item, type }) {
+export default function SearchHistoryItem({
+  item,
+  type,
+  setDeletedItem,
+  deletedItem,
+}) {
   const href =
     type === "Rutas"
       ? "/datos/rutas"
@@ -40,32 +47,42 @@ export default function SearchHistoryItem({ item, type }) {
   const { routesInputs, setRoutesInputs } = useRoutesInputs();
   const { stopsInputs, setStopsInputs } = useStopsInputs();
   const { packagesInputs, setPackagesInputs } = usePackagesInputs();
-  for (const key in item) {
-    if (key !== "limit" && Array.isArray(item[key])) {
+  const input = item.Input;
+  for (const key in input) {
+    if (key !== "limit" && Array.isArray(input[key])) {
       values.push(
-        ...item[key].map((value) =>
+        ...input[key].map((value) =>
           keyDictionary[key] ? `${keyDictionary[key]} ${value}` : value
         )
       );
-    } else if (key !== "limit" && item[key]) {
+    } else if (key !== "limit" && input[key]) {
       values.push(
-        keyDictionary[key] ? `${keyDictionary[key]} ${item[key]}` : item[key]
+        keyDictionary[key] ? `${keyDictionary[key]} ${input[key]}` : input[key]
       );
     }
   }
 
   const handleClick = () => {
     if (type === "Rutas") {
-      setRoutesInputs(item);
+      setRoutesInputs(input);
     } else if (type === "Paradas") {
-      setStopsInputs(item);
+      setStopsInputs(input);
     } else {
-      setPackagesInputs(item);
+      setPackagesInputs(input);
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      await deleteHistoryItem(item.Id);
+      setDeletedItem(!deletedItem);
+    } catch (error) {
+      console.error("Error al eliminar el elemento del historial:", error);
     }
   };
 
   return (
-    <div className="flex flex-row items-center gap-2">
+    <div className="group flex flex-row items-center gap-2">
       <div className="flex flex-wrap justify-start items-center gap-2">
         {values.length > 0 ? (
           values.map((value, index) => (
@@ -83,6 +100,7 @@ export default function SearchHistoryItem({ item, type }) {
         )}
       </div>
       <div className="flex flex-row gap-2 ml-auto">
+        <DeleteItem handleDelete={handleDelete} />
         <Link href={href}>
           <button
             className="bg-sky-100 text-sky-800 rounded-md p-2"

@@ -20,7 +20,7 @@ export default function ActiveLink({ text, children }) {
 
   return (
     <div
-      className={`flex flex-row items-center gap-2 rounded-md font-semibold p-2 ${bgColor} ${textColor}`}
+      className={`flex flex-row items-center gap-2 rounded-md font-semibold p-2 transition-all ease-in-out duration-150  ${bgColor} ${textColor}`}
     >
       {children}
       {text}
