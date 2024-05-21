@@ -1,8 +1,8 @@
-"use client";
-import Filter from "./Filter";
-import ButtonsForm from "./ButtonsForm";
-import { search, addSearchHistory } from "../../utils/dataFetch";
-import NumberInput from "./NumberInput";
+import { search } from "@/app/utils/searchData";
+import { addSearchHistory } from "@/app/utils/history";
+import ButtonsForm from "@/app/components/forms/ButtonsForm";
+import Filter from "@/app/components/forms/Filter";
+import NumberInput from "@/app/components/forms/NumberInput";
 
 export default function StopsForm({
   setStops,

@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { search, getDict } from "../../utils/dataFetch";
+import { search, getDict } from "../../utils/searchData";
 import PackagesForm from "../../components/forms/PackagesForm";
 import TableWithPages from "../../components/table/TableWithPages";
 import { usePackagesInputs } from "../../context/ContextProvider";

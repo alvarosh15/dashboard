@@ -1,8 +1,11 @@
 "use client";
 import DynamicChart from "@/app/components/charts/DynamicChart";
 import { useState, useEffect } from "react";
-import { getCityCharts, getGeneralCharts } from "@/app/utils/charts";
-import { getLikedChartsIds } from "@/app/utils/statistics";
+import {
+  getCityCharts,
+  getGeneralCharts,
+  getLikedChartsIds,
+} from "@/app/utils/charts";
 
 export default function PageCharts({ city }) {
   const [charts, setCharts] = useState([]);

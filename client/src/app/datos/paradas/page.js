@@ -2,7 +2,7 @@
 import TableWithPages from "../../components/table/TableWithPages";
 import StopsForm from "../../components/forms/StopsForm";
 import { useState, useEffect } from "react";
-import { search, getDict } from "../../utils/dataFetch";
+import { search, getDict } from "../../utils/searchData";
 import { useStopsInputs } from "../../context/ContextProvider";
 
 export default function ParadasPage() {

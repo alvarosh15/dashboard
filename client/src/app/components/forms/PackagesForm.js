@@ -1,9 +1,9 @@
-"use client";
-import Filter from "./Filter";
-import { search, addSearchHistory } from "../../utils/dataFetch";
-import ButtonsForm from "./ButtonsForm";
-import NumberInput from "./NumberInput";
-import IntervalInput from "./IntervalInput";
+import { search } from "@/app/utils/searchData";
+import { addSearchHistory } from "@/app/utils/history";
+import Filter from "@/app/components/forms/Filter";
+import ButtonsForm from "@/app/components/forms/ButtonsForm";
+import NumberInput from "@/app/components/forms/NumberInput";
+import IntervalInput from "@/app/components/forms/IntervalInput";
 
 export default function PackagesForm({
   setPackages,

@@ -1,7 +1,7 @@
 "use client";
 import { useSession, signIn } from "next-auth/react";
-import LikedCharts from "./components/charts/LikedCharts";
-import SearchHistory from "./components/history/SearchHistory";
+import LikedCharts from "@/app/components/charts/LikedCharts";
+import SearchHistory from "@/app/components/history/SearchHistory";
 
 export default function Home() {
   const { data: session } = useSession();

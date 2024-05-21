@@ -1,10 +1,9 @@
-"use client";
 import { useRoutesInputs } from "@/app/context/ContextProvider";
 import { useStopsInputs } from "@/app/context/ContextProvider";
 import { usePackagesInputs } from "@/app/context/ContextProvider";
 import Link from "next/link";
-import DeleteItem from "./DeleteItem";
-import { deleteHistoryItem } from "@/app/utils/dataFetch";
+import DeleteItem from "@/app/components/history/DeleteItem";
+import { deleteHistoryItem } from "@/app/utils/history";
 
 const keyDictionary = {
   startDate: "Fecha de inicio ≥",

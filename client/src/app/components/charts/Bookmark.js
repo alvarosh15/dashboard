@@ -1,4 +1,4 @@
-import { removeLikeChart, addLikeChart } from "@/app/utils/statistics";
+import { removeLikeChart, addLikeChart } from "@/app/utils/charts";
 
 export default function Bookmark({
   chartId,

@@ -1,5 +1,3 @@
-import axiosInstance from "./axiosInstance";
-
 const dict_scores = {
   High: "Alta",
   Medium: "Media",
@@ -84,63 +82,6 @@ export async function numberOfRoutesByCapacity(city) {
   const y = x.map((date) => data[date]);
   let aux = { x, y };
   return aux;
-}
-
-export async function getLikedCharts() {
-  try {
-    const response = await axiosInstance.get("/liked_charts", {
-      cache: "no-store",
-    });
-    const json = response.data;
-    const liked = json.data;
-    return liked;
-  } catch (error) {
-    throw error;
-  }
-}
-
-export async function removeLikeChart(chartId) {
-  try {
-    const response = await axiosInstance.delete(
-      `${process.env.NEXT_PUBLIC_API_URL}/liked_charts/${chartId}`
-    );
-    return response.data;
-  } catch (error) {
-    console.error("Error removing favorite:", error);
-  }
-}
-
-export async function getLikedChartsIds() {
-  try {
-    const response = await axiosInstance.get("/liked_charts/ids", {
-      cache: "no-store",
-    });
-    const json = response.data;
-    const liked = json.data;
-    return liked;
-  } catch (error) {
-    throw error;
-  }
-}
-
-export async function addLikeChart(chartId, city) {
-  try {
-    const response = await axiosInstance.post(
-      `${process.env.NEXT_PUBLIC_API_URL}/liked_charts`,
-      {
-        chartId,
-        city,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    return response.data;
-  } catch (error) {
-    console.error("Error adding favorite:", error);
-  }
 }
 
 export async function numberOfRoutesByCity() {

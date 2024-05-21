@@ -1,6 +1,6 @@
-import SearchHistoryItem from "./SearchHistoryItem";
 import { useEffect, useState } from "react";
-import { getSearchHistory } from "@/app/utils/dataFetch";
+import { getSearchHistory } from "@/app/utils/history";
+import SearchHistoryItem from "@/app/components/history/SearchHistoryItem";
 
 export default function SearchHistory() {
   const [routesHistory, setRoutesHistory] = useState([]);

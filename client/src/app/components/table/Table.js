@@ -1,4 +1,4 @@
-import { search } from "@/app/utils/dataFetch";
+import { search } from "@/app/utils/searchData";
 import { useCurrentIds } from "../../context/ContextProvider";
 
 export default function Table({

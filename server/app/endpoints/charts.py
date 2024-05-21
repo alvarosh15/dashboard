@@ -30,7 +30,6 @@ def get_city_charts():
         items = [{"Id": chart.id, "Config": chart.config} for chart in charts]
         return jsonify({'data': items}), 200
     except Exception as e:
-        print(e)
         return jsonify({"message": "Internal Server Error"}), 500
 
 @charts_bp.route('/liked_charts', methods=['GET'])
@@ -50,7 +49,6 @@ def get_liked_charts():
 
         return jsonify({'data': data}), 200
     except Exception as e:
-        print(e)
         return jsonify({"message": "Internal Server Error"}), 500
 
 @charts_bp.route('/liked_charts', methods=['POST'])
@@ -163,7 +161,6 @@ def packages_by_status():
 
         return jsonify({"data": package_by_status}), 200
     except Exception as e:
-        print(e)
         return jsonify({"message": "Internal Server Error"}), 500
     
 @charts_bp.route('/routes_by_month', methods=['GET'])
@@ -241,7 +238,6 @@ def score_counts():
         score_counts = {row.ScoreName if row.ScoreName else 'Sin datos': row.Count for row in results}
         return jsonify({"data": score_counts}), 200
     except Exception as e:
-        print(e)
         return jsonify({"message": "Internal Server Error"}), 500
 
 @charts_bp.route('/routes_by_city', methods=['GET'])

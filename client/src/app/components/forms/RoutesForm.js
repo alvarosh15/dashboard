@@ -1,9 +1,9 @@
-"use client";
-import Filter from "./Filter";
-import { search, addSearchHistory } from "../../utils/dataFetch";
-import ButtonsForm from "./ButtonsForm";
-import IntervalInput from "./IntervalInput";
-import NumberInput from "./NumberInput";
+import { search } from "@/app/utils/searchData";
+import { addSearchHistory } from "@/app/utils/history";
+import Filter from "@/app/components/forms/Filter";
+import ButtonsForm from "@/app/components/forms/ButtonsForm";
+import IntervalInput from "@/app/components/forms/IntervalInput";
+import NumberInput from "@/app/components/forms/NumberInput";
 
 export default function RoutesForm({
   setRoutes,

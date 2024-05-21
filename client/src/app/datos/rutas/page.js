@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { search, getDict, getStationCodes } from "../../utils/dataFetch";
+import { search, getDict, getStationCodes } from "../../utils/searchData";
 import RoutesForm from "../../components/forms/RoutesForm";
 import TableWithPages from "../../components/table/TableWithPages";
 import { useRoutesInputs } from "../../context/ContextProvider";
