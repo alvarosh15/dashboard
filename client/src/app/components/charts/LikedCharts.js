@@ -1,11 +1,13 @@
 "use client";
-import { getLikedCharts } from "@/app/utils/statistics";
+import { getLikedCharts, getLikedChartsIds } from "@/app/utils/statistics";
 import { useEffect, useState } from "react";
 import DynamicChart from "@/app/components/charts/DynamicChart";
 
 export default function LikedCharts() {
   const [charts, setCharts] = useState([]);
   const [isExpanded, setIsExpanded] = useState(true);
+  const [likedChartsIds, setLikedChartsIds] = useState([]);
+  const [updatedItem, setUpdatedItem] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -19,6 +21,21 @@ export default function LikedCharts() {
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getLikedCharts();
+        setCharts(data);
+        const ids = await getLikedChartsIds();
+        setLikedChartsIds(ids);
+      } catch (error) {
+        console.error("Failed to fetch charts:", error);
+      }
+    };
+
+    fetchData();
+  }, [updatedItem]);
 
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
@@ -59,7 +76,15 @@ export default function LikedCharts() {
         <div className="flex flex-col w-full lg:flex-row lg:flex-wrap *:p-1 *:h-72">
           {charts.length > 0 &&
             charts.map((chart, index) => (
-              <DynamicChart key={index} config={chart} isLikedChart={true} />
+              <DynamicChart
+                key={index}
+                config={chart.config}
+                id={chart.id}
+                isLikedChart={true}
+                likedChartsIds={likedChartsIds}
+                updatedItem={updatedItem}
+                setUpdatedItem={setUpdatedItem}
+              />
             ))}
         </div>
       </div>

@@ -1,8 +1,5 @@
 from flask import Blueprint, jsonify, request
-from app.models import Stop
-from app.models import Type
-
-
+from app.models import Stop, Type
 
 map_bp = Blueprint('map_bp', __name__)
 
@@ -13,17 +10,17 @@ def get_stops_coordinates():
         if not route_id:
             return jsonify({"error": "Route ID is required"}), 400
 
-        stops = Stop.query.filter_by(RouteId=route_id).all()
+        stops = Stop.query.filter_by(route_id=route_id).all()
 
-        type_ids = [stop.TypeId for stop in stops]
+        type_ids = [stop.type_id for stop in stops]
 
-        types = Type.query.filter(Type.TypeId.in_(type_ids)).all()
-        type_dict = {type.TypeId: type.TypeName for type in types}
+        types = Type.query.filter(Type.type_id.in_(type_ids)).all()
+        type_dict = {type.type_id: type.type_name for type in types}
 
         coordinates = {
-            "lat": [stop.Latitude for stop in stops],
-            "lon": [stop.Longitude for stop in stops],
-            "type": [type_dict.get(stop.TypeId) for stop in stops]
+            "lat": [stop.latitude for stop in stops],
+            "lon": [stop.longitude for stop in stops],
+            "type": [type_dict.get(stop.type_id) for stop in stops]
         }
         return jsonify({"data": coordinates}), 200
     except Exception as e:

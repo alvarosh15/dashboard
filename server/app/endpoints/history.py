@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from app.models.history import History, InputType
+from app.models import History, InputType
 from app.database import db
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
@@ -11,17 +11,17 @@ def add_history():
     try:
         user_id = get_jwt_identity().get('id')
         data = request.get_json()
-        inputs = data.get('input')
+        input = data.get('input')
         type_str = data.get('type')
         
-        if not inputs or not type_str:
+        if not input or not type_str:
             return jsonify({"message": "Invalid data"}), 400
         
-        input_type = InputType.query.filter_by(Type=type_str).first()
+        input_type = InputType.query.filter_by(type=type_str).first()
         if not input_type:
             return jsonify({"message": "Invalid input type"}), 400
         
-        new_history = History(UserId=user_id, Inputs=inputs, TypeId=input_type.Id)
+        new_history = History(user_id=user_id, input=input, type_id=input_type.id)
         db.session.add(new_history)
         db.session.commit()
         
@@ -42,13 +42,14 @@ def get_history():
         }
         
         for type_str in history_data.keys():
-            input_type = InputType.query.filter_by(Type=type_str).first()
+            input_type = InputType.query.filter_by(type=type_str).first()
             if input_type:
-                histories = History.query.filter_by(UserId=user_id, TypeId=input_type.Id).order_by(History.Id.desc()).order_by(History.AddedAt.desc()).limit(5).all()
-                history_data[type_str] = [{'Id': history.Id, 'Input': history.Inputs} for history in histories]
+                histories = History.query.filter_by(user_id=user_id, type_id=input_type.id).order_by(History.id.desc()).order_by(History.added_at.desc()).limit(5).all()
+                history_data[type_str] = [{'Id': history.id, 'Input': history.input} for history in histories]
         
         return jsonify(history_data), 200
     except Exception as e:
+        print(e)
         return jsonify({"message": "Internal Server Error"}), 500
     
 @history_bp.route('/history/delete/<int:id>', methods=['DELETE'])
@@ -57,9 +58,9 @@ def delete_history(id):
     try:
         user_id = get_jwt_identity().get('id')
         
-        history_item = History.query.filter_by(Id=id).first()
+        history_item = History.query.filter_by(id=id).first()
 
-        if not history_item or history_item.UserId != user_id:
+        if not history_item or history_item.user_id != user_id:
             return jsonify({"message": "Item not found or access denied"}), 404
 
         db.session.delete(history_item)

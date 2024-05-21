@@ -1,14 +1,7 @@
-import DynamicChart from "@/app/components/charts/DynamicChart";
-import { cityCharts } from "../charts";
+import PageCharts from "@/app/components/charts/PageCharts";
 
-export default async function EstadisticasSeattlePage() {
+export default function EstadisticasSeattlePage() {
   const city = "Seattle";
 
-  return (
-    <div className="flex flex-col w-full lg:flex-row lg:flex-wrap *:p-1 *:h-72">
-      {cityCharts.map((config, index) => (
-        <DynamicChart key={index} config={{ ...config, city }} />
-      ))}
-    </div>
-  );
+  return <PageCharts city={city} />;
 }

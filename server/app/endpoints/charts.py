@@ -1,15 +1,37 @@
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask import Blueprint, jsonify, request
-from sqlalchemy import desc, func, case
+from sqlalchemy import asc, func
 from sqlalchemy.orm import aliased
-from app.models import Route
-from app.models import Package
-from app.models import Status
-from app.models import Score
-from app.models import Liked
+from app.models import Route, Package, Status, Score, Liked, Chart, ChartType
 from app.database import db
 
 charts_bp = Blueprint('charts_bp', __name__)
+
+@charts_bp.route('/charts/general', methods=['GET'])
+def get_general_charts():
+    try:
+        type_ids = ChartType.query.filter(ChartType.type.in_(['General', 'City'])).all()
+        type_ids = [type_.id for type_ in type_ids]
+
+        charts = Chart.query.filter(Chart.type_id.in_(type_ids)).order_by(asc(Chart.position)).all()
+
+        items = [{"Id": chart.id, "Config": chart.config} for chart in charts]
+        return jsonify({'data': items}), 200
+    except Exception as e:
+        return jsonify({"message": "Internal Server Error"}), 500
+
+@charts_bp.route('/charts/city', methods=['GET'])
+def get_city_charts():
+    try:
+
+        CityId = ChartType.query.filter(ChartType.type == 'City').first().id
+        charts = Chart.query.filter(Chart.type_id == CityId).order_by(asc(Chart.position)).all()
+
+        items = [{"Id": chart.id, "Config": chart.config} for chart in charts]
+        return jsonify({'data': items}), 200
+    except Exception as e:
+        print(e)
+        return jsonify({"message": "Internal Server Error"}), 500
 
 @charts_bp.route('/liked_charts', methods=['GET'])
 @jwt_required()
@@ -17,23 +39,16 @@ def get_liked_charts():
     try:
         user_id = get_jwt_identity()['id']
         
-        liked_charts = Liked.query.filter_by(UserId=user_id).order_by(Liked.Id.desc()).all()
-        
-        configs = []
-        for chart in liked_charts:
-            config = {
-                'size': chart.Size,
-                'type': chart.Type,
-                'title': chart.Title,
-                'city': chart.City,
-                'colorPalette': chart.ColorPalette.get('Colors', []) if chart.ColorPalette else [],
-                'dataConfig': chart.DataConfig,
-                'layoutConfig': chart.LayoutConfig,
-                'dataFetcher': chart.DataFetcher
-            }
-            configs.append(config)
+        liked_charts = Liked.query.filter_by(user_id=user_id).order_by(Liked.id.desc()).all()
+        data = []
+        for liked in liked_charts:
+                config_with_city = dict(liked.chart.config)  
+                config_with_city['city'] = liked.city
+                data.append({"config": config_with_city,
+                    "id": liked.chart_id  
+                })
 
-        return jsonify({'data': configs}), 200
+        return jsonify({'data': data}), 200
     except Exception as e:
         print(e)
         return jsonify({"message": "Internal Server Error"}), 500
@@ -43,30 +58,53 @@ def get_liked_charts():
 def post_liked_chart():
     try:
         user_id = get_jwt_identity()['id']
-        data = request.json
+        data = request.get_json()
 
-        color_palette = data.get('colorPalette')
-        if isinstance(color_palette, str):
-            color_palette = {"Colors": [color_palette]}
-        elif isinstance(color_palette, list):
-            color_palette = {"Colors": color_palette}
+        chart_id = data.get('chartId')
+        city = data.get('city', '') 
 
-        new_liked = Liked(
-            UserId=user_id,
-            Size=data.get('size'),
-            Type=data.get('type'),
-            Title=data.get('title', 'Sin titulo'),
-            City=data.get('city'),
-            ColorPalette=color_palette,
-            DataConfig=data.get('dataConfig', {}),
-            LayoutConfig=data.get('layoutConfig', {}),
-            DataFetcher=data.get('dataFetcher')
+        if Liked.query.filter_by(user_id=user_id, chart_id=chart_id).first():
+            return jsonify({"message": "You already liked this chart"}), 409
+
+        new_like = Liked(
+            user_id=user_id,
+            chart_id=chart_id,
+            city=city
         )
-        print(data.get('city'))
-        db.session.add(new_liked)
+        
+        db.session.add(new_like)
         db.session.commit()
 
         return jsonify({"message": "Liked chart saved successfully"}), 201
+    except Exception as e:
+        return jsonify({"message": "Internal Server Error"}), 500
+
+@charts_bp.route('/liked_charts/<int:id>', methods=['DELETE'])
+@jwt_required()
+def delete_history(id):
+    try:
+        user_id = get_jwt_identity().get('id')
+        
+        liked_item = Liked.query.filter_by(chart_id=id).first()
+
+        if not liked_item or liked_item.user_id != user_id:
+            return jsonify({"message": "Item not found or access denied"}), 404
+
+        db.session.delete(liked_item)
+        db.session.commit()
+        
+        return jsonify({"message": "Item deleted successfully"}), 200
+    except Exception as e:
+        return jsonify({"message": "Internal Server Error"}), 500
+
+@charts_bp.route('/liked_charts/ids', methods=['GET'])
+@jwt_required()
+def get_liked_charts_id():
+    try:
+        user_id = get_jwt_identity()['id']
+        liked_charts = Liked.query.filter_by(user_id=user_id).all()
+        data = [liked.chart_id for liked in liked_charts]
+        return jsonify({'data': data}), 200
     except Exception as e:
         return jsonify({"message": "Internal Server Error"}), 500
 
@@ -82,10 +120,10 @@ def routes_by_capacity():
             'Austin': 'DAU'
         }
 
-        query = db.session.query(Route.ExecutorCapacity, db.func.count(Route.ExecutorCapacity)).group_by(Route.ExecutorCapacity).order_by(Route.ExecutorCapacity)
+        query = db.session.query(Route.executor_capacity, db.func.count(Route.executor_capacity)).group_by(Route.executor_capacity).order_by(Route.executor_capacity)
 
         if city:
-            query = query.filter(Route.StationCode.like(f"{city_station_code[city]}%"))
+            query = query.filter(Route.station_code.like(f"{city_station_code[city]}%"))
 
         results = query.all()
 
@@ -107,16 +145,16 @@ def packages_by_status():
         }
 
         query = db.session.query(
-            Status.StatusName.label('StatusName'), 
+            Status.status_name.label('StatusName'), 
             func.count().label('Count')
         ).select_from(Package).outerjoin(
-            Status, Package.StatusId == Status.StatusId 
+            Status, Package.status_id == Status.status_id 
         ).group_by(
-            Status.StatusName
+            Status.status_name
         )
 
         if city:
-            query = query.join(Route, Package.RouteId == Route.RouteId).filter(Route.StationCode.like(f"{city_station_code[city]}%"))
+            query = query.join(Route, Package.route_id == Route.route_id).filter(Route.station_code.like(f"{city_station_code[city]}%"))
 
         results = query.all()
         print(results)
@@ -140,10 +178,10 @@ def routes_by_month():
             'Austin': 'DAU'
         }
 
-        query = db.session.query(db.func.date_format(Route.Date, '%Y-%m').label('Month'), db.func.count(Route.RouteId)).group_by('Month').order_by('Month')
+        query = db.session.query(db.func.date_format(Route.date, '%Y-%m').label('Month'), db.func.count(Route.route_id)).group_by('Month').order_by('Month')
 
         if city:
-            query = query.filter(Route.StationCode.like(f"{city_station_code[city]}%"))
+            query = query.filter(Route.station_code.like(f"{city_station_code[city]}%"))
 
         results = query.all()
 
@@ -164,10 +202,10 @@ def routes_by_day():
             'Austin': 'DAU'
         }
 
-        query = db.session.query(Route.Date, db.func.count(Route.RouteId)).group_by(Route.Date).order_by(Route.Date)
+        query = db.session.query(Route.date, db.func.count(Route.route_id)).group_by(Route.date).order_by(Route.date)
 
         if city:
-            query = query.filter(Route.StationCode.like(f"{city_station_code[city]}%"))
+            query = query.filter(Route.station_code.like(f"{city_station_code[city]}%"))
 
         results = query.all()
 
@@ -189,14 +227,14 @@ def score_counts():
         }
 
         query = db.session.query(
-            Score.ScoreName.label('ScoreName'),
+            Score.score_name.label('ScoreName'),
             func.count().label('Count')
-        ).select_from(Route).outerjoin(Score, Route.ScoreId == Score.ScoreId).group_by(
-            Score.ScoreName
+        ).select_from(Route).outerjoin(Score, Route.score_id == Score.score_id).group_by(
+            Score.score_name
         )
         
         if city:
-            query = query.filter(Route.StationCode.like(f"{city_station_code[city]}%"))
+            query = query.filter(Route.station_code.like(f"{city_station_code[city]}%"))
 
         results = query.all()
 
@@ -211,14 +249,14 @@ def routes_by_city():
     try:
         query = db.session.query(
             db.case(
-                (Route.StationCode.like('DAU%'), 'Austin'),
-                (Route.StationCode.like('DBO%'), 'Boston'),
-                (Route.StationCode.like('DLA%'), 'Los Angeles'),
-                (Route.StationCode.like('DCH%'), 'Chicago'),
-                (Route.StationCode.like('DSE%'), 'Seattle'),
+                (Route.station_code.like('DAU%'), 'Austin'),
+                (Route.station_code.like('DBO%'), 'Boston'),
+                (Route.station_code.like('DLA%'), 'Los Angeles'),
+                (Route.station_code.like('DCH%'), 'Chicago'),
+                (Route.station_code.like('DSE%'), 'Seattle'),
                 else_='Unknown'
             ).label('City'),
-            db.func.count(Route.RouteId).label('NumberOfRoutes')
+            db.func.count(Route.route_id).label('NumberOfRoutes')
         ).group_by('City')
 
         results = query.all()
@@ -242,12 +280,12 @@ def routes_by_departure_hour():
         }
 
         query = db.session.query(
-            db.func.hour(Route.DepartureTime).label('Hour'),
-            db.func.count(Route.RouteId).label('Load')
+            db.func.hour(Route.departure_time).label('Hour'),
+            db.func.count(Route.route_id).label('Load')
         ).group_by('Hour').order_by('Hour')
 
         if city:
-            query = query.filter(Route.StationCode.like(f"{city_station_code[city]}%"))
+            query = query.filter(Route.station_code.like(f"{city_station_code[city]}%"))
 
         results = query.all()
 
@@ -269,9 +307,9 @@ def avg_packages():
         }
 
         subquery = db.session.query(
-            Package.RouteId,
-            func.count(Package.PackageId).label('package_count')
-        ).group_by(Package.RouteId).subquery()
+            Package.route_id,
+            func.count(Package.package_id).label('package_count')
+        ).group_by(Package.route_id).subquery()
 
         alias_subquery = aliased(subquery)
 
@@ -279,13 +317,13 @@ def avg_packages():
             base_query = db.session.query(
                 func.avg(alias_subquery.c.package_count).label('AvgPackagesPerRoute')
             ).select_from(Route).join(
-                alias_subquery, alias_subquery.c.RouteId == Route.RouteId
-            ).filter(Route.StationCode.like(city_station_code[city]))
+                alias_subquery, alias_subquery.c.route_id == Route.route_id
+            ).filter(Route.station_code.like(city_station_code[city]))
         else:
             base_query = db.session.query(
                 func.avg(alias_subquery.c.package_count).label('AvgPackagesPerRoute')
             ).select_from(Route).join(
-                alias_subquery, alias_subquery.c.RouteId == Route.RouteId
+                alias_subquery, alias_subquery.c.route_id == Route.route_id
             )
 
         result = base_query.scalar()

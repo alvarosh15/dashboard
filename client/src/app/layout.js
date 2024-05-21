@@ -7,7 +7,7 @@ import { NextAuthProvider } from "./provider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Amazon Last Mille Dashboard ",
+  title: "Amazon Last Mille Dashboard",
 };
 
 export default function RootLayout({ children }) {

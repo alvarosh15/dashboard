@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify
-from app.models.status import Status
+from app.models import Status
 
 status_bp = Blueprint('status_bp', __name__)
 
@@ -8,7 +8,7 @@ def return_status():
     try:
         status = Status.query.all()
 
-        status_list = [{"StatusId": state.StatusId, "StatusName": state.StatusName} for state in status]
+        status_list = [{"StatusId": state.status_id, "StatusName": state.status_name} for state in status]
 
         return jsonify({"data": status_list}), 200
     except Exception as e:

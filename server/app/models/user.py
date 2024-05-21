@@ -3,8 +3,9 @@ from app.database import db
 class User(db.Model):
     __tablename__ = 'user'
     
-    Id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    GoogleId = db.Column(db.String(255), unique=True, nullable=False)
-    Name = db.Column(db.String(255))
-    Email = db.Column(db.String(255), unique=True, nullable=False)
-    ImageUrl = db.Column(db.String(255))
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True) 
+    name = db.Column(db.String(255))
+    email = db.Column(db.String(255), unique=True, nullable=False)
+    image_url = db.Column(db.String(255))
+
+    likes = db.relationship('Liked', back_populates='user', lazy='joined')

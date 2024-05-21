@@ -1,9 +1,21 @@
 from flask import Blueprint, jsonify, request
-from app.models.package import Package
-from app.models.status import Status
+from app.models import Package, Status
 from app.database import db
 
 package_bp = Blueprint('package_bp', __name__)
+
+package_column_mapping = {
+    "PackageId": "package_id",
+    "StatusId": "status_id",
+    "StartTimeWindow": "start_time_window",
+    "EndTimeWindow": "end_time_window",
+    "PlannedServiceTime": "planned_service_time",
+    "Depth": "depth",
+    "Height": "height",
+    "Width": "width",
+    "RouteId": "route_id",
+    "StopId": "stop_id"
+}
 
 @package_bp.route('/packages', methods=['GET'])
 def return_packages():
@@ -37,7 +49,7 @@ def return_packages():
         query = Package.query
 
         if package_id:
-            query = query.filter(Package.PackageId == package_id)
+            query = query.filter(Package.package_id == package_id)
 
         if status:
             status_ids = []
@@ -45,64 +57,65 @@ def return_packages():
             parameterized_status = [dict_status[state] for state in status if state != 'Sin datos']
 
             if parameterized_status:
-                status_records = Status.query.filter(Status.StatusName.in_(parameterized_status)).all()
-                status_ids = [status.StatusId for status in status_records]
+                status_records = Status.query.filter(Status.status_name.in_(parameterized_status)).all()
+                status_ids = [status.status_id for status in status_records]
 
             if 'Sin datos' in status:
-                conditions.append(Package.StatusId == None)
+                conditions.append(Package.status_id == None)
 
             if status_ids:
-                conditions.append(Package.StatusId.in_(status_ids))
+                conditions.append(Package.status_id.in_(status_ids))
 
             if conditions:
                 query = query.filter(db.or_(*conditions))
 
         if start_time_window and end_time_window:
-            query = query.filter(Package.StartTimeWindow.between(start_time_window, end_time_window))
+            query = query.filter(Package.start_time_window.between(start_time_window, end_time_window))
         elif start_time_window:
-            query = query.filter(Package.StartTimeWindow >= start_time_window)
+            query = query.filter(Package.start_time_window >= start_time_window)
         elif end_time_window:
-            query = query.filter(Package.StartTimeWindow <= end_time_window)
+            query = query.filter(Package.start_time_window <= end_time_window)
 
         if low_planned_service_time and high_planned_service_time:
-            query = query.filter(Package.PlannedServiceTime.between(low_planned_service_time, high_planned_service_time))
+            query = query.filter(Package.planned_service_time.between(low_planned_service_time, high_planned_service_time))
         elif low_planned_service_time:
-            query = query.filter(Package.PlannedServiceTime >= low_planned_service_time)
+            query = query.filter(Package.planned_service_time >= low_planned_service_time)
         elif high_planned_service_time:
-            query = query.filter(Package.PlannedServiceTime <= high_planned_service_time)
+            query = query.filter(Package.planned_service_time <= high_planned_service_time)
 
         if min_depth and max_depth:
-            query = query.filter(Package.Depth.between(min_depth, max_depth))
+            query = query.filter(Package.depth.between(min_depth, max_depth))
         elif min_depth:
-            query = query.filter(Package.Depth >= min_depth)
+            query = query.filter(Package.depth >= min_depth)
         elif max_depth:
-            query = query.filter(Package.Depth <= max_depth)
+            query = query.filter(Package.depth <= max_depth)
 
         if min_width and max_width:
-            query = query.filter(Package.Width.between(min_width, max_width))
+            query = query.filter(Package.width.between(min_width, max_width))
         elif min_width:
-            query = query.filter(Package.Width >= min_width)
+            query = query.filter(Package.width >= min_width)
         elif max_width:
-            query = query.filter(Package.Width <= max_width)
+            query = query.filter(Package.width <= max_width)
 
         if min_height and max_height:
-            query = query.filter(Package.Height.between(min_height, max_height))
+            query = query.filter(Package.height.between(min_height, max_height))
         elif min_height:
-            query = query.filter(Package.Height >= min_height)
+            query = query.filter(Package.height >= min_height)
         elif max_height:
-            query = query.filter(Package.Height <= max_height)
+            query = query.filter(Package.height <= max_height)
 
         if route_id:
-            query = query.filter(Package.RouteId == route_id)
+            query = query.filter(Package.route_id == route_id)
 
         if stop_id:
-            query = query.filter(Package.StopId == stop_id)
+            query = query.filter(Package.stop_id == stop_id)
 
         total_count = query.count()
         total_pages = (total_count + limit - 1) // limit
 
         if sort_key and sort_direction:
-            sort_column = getattr(Package, sort_key)
+            mapped_sort_key = package_column_mapping.get(sort_key)
+            sort_column = getattr(Package, mapped_sort_key)
             if sort_direction == 'ASC':
                 query = query.order_by(sort_column.asc())
             elif sort_direction == 'DESC':
@@ -110,13 +123,14 @@ def return_packages():
 
         packages = query.paginate(page=page, per_page=limit, error_out=False).items
 
-        packages_list = [{"Id": package.Id, "PackageId": package.PackageId, "StatusId": package.StatusId, 
-                          "StartTimeWindow": package.StartTimeWindow.strftime('%Y-%m-%d %H:%M:%S') if package.StartTimeWindow else None, 
-                          "EndTimeWindow": package.EndTimeWindow.strftime('%Y-%m-%d %H:%M:%S') if package.EndTimeWindow else None, 
-                          "PlannedServiceTime": package.PlannedServiceTime, "Depth": package.Depth, 
-                          "Height": package.Height, "Width": package.Width, "RouteId": package.RouteId, 
-                          "StopId": package.StopId} for package in packages]
+        packages_list = [{"Id": package.id, "PackageId": package.package_id, "StatusId": package.status_id, 
+                          "StartTimeWindow": package.start_time_window.strftime('%Y-%m-%d %H:%M:%S') if package.start_time_window else None, 
+                          "EndTimeWindow": package.end_time_window.strftime('%Y-%m-%d %H:%M:%S') if package.end_time_window else None, 
+                          "PlannedServiceTime": package.planned_service_time, "Depth": package.depth, 
+                          "Height": package.height, "Width": package.width, "RouteId": package.route_id, 
+                          "StopId": package.stop_id} for package in packages]
 
         return jsonify({"data": packages_list, "totalPages": total_pages}), 200
     except Exception as e:
+        print(e)
         return jsonify({"message": "Internal Server Error"}), 500

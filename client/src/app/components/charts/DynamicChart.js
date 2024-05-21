@@ -40,9 +40,15 @@ const dataFetcherMapping = {
   avgPackagePerRoute: avgPackagePerRoute,
 };
 
-export default function DynamicChart({ config, isLikedChart = false }) {
+export default function DynamicChart({
+  config,
+  id,
+  likedChartsIds,
+  isLikedChart = false,
+  updatedItem,
+  setUpdatedItem,
+}) {
   const [data, setData] = useState(null);
-
   useEffect(() => {
     const fetchData = async () => {
       const dataFetcher = dataFetcherMapping[config.dataFetcher];
@@ -73,12 +79,19 @@ export default function DynamicChart({ config, isLikedChart = false }) {
   if (colorPalette && colorPalette.length === 1) {
     colorPalette = colorPalette[0];
   }
+
   const dataConfig = config.dataConfig;
   const layoutConfig = config.layoutConfig;
 
   return (
     <SizeComponent>
-      <Bookmark config={{ config }} />
+      <Bookmark
+        chartId={id}
+        city={config.city}
+        likedChartsIds={likedChartsIds}
+        updatedItem={updatedItem}
+        setUpdatedItem={setUpdatedItem}
+      />
       <Chart
         data={data}
         title={title}

@@ -99,19 +99,37 @@ export async function getLikedCharts() {
   }
 }
 
-export async function addLikeChart({ config }) {
+export async function removeLikeChart(chartId) {
+  try {
+    const response = await axiosInstance.delete(
+      `${process.env.NEXT_PUBLIC_API_URL}/liked_charts/${chartId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error removing favorite:", error);
+  }
+}
+
+export async function getLikedChartsIds() {
+  try {
+    const response = await axiosInstance.get("/liked_charts/ids", {
+      cache: "no-store",
+    });
+    const json = response.data;
+    const liked = json.data;
+    return liked;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function addLikeChart(chartId, city) {
   try {
     const response = await axiosInstance.post(
       `${process.env.NEXT_PUBLIC_API_URL}/liked_charts`,
       {
-        size: config.size,
-        type: config.type,
-        title: config.title,
-        city: config.city,
-        colorPalette: config.colorPalette,
-        dataConfig: config.dataConfig,
-        layoutConfig: config.layoutConfig,
-        dataFetcher: config.dataFetcher,
+        chartId,
+        city,
       },
       {
         headers: {
@@ -119,8 +137,7 @@ export async function addLikeChart({ config }) {
         },
       }
     );
-
-    console.log(response.data);
+    return response.data;
   } catch (error) {
     console.error("Error adding favorite:", error);
   }
