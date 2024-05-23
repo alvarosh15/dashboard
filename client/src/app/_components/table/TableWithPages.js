@@ -1,5 +1,5 @@
-import Pagination from "./Pagination.js";
-import Table from "./Table.js";
+import Pagination from "@/app/_components/table/Pagination.js";
+import Table from "@/app/_components/table/Table.js";
 
 export default function TableWithPages({
   headers,

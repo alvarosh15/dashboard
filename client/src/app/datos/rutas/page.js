@@ -1,9 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
-import { search, getDict, getStationCodes } from "../../utils/searchData";
-import RoutesForm from "../../components/forms/RoutesForm";
-import TableWithPages from "../../components/table/TableWithPages";
-import { useRoutesInputs } from "../../context/ContextProvider";
+import { search, getDict, getStationCodes } from "@/app/_utils/searchData";
+import RoutesForm from "@/app/_components/forms/RoutesForm";
+import TableWithPages from "@/app/_components/table/TableWithPages";
+import { useRoutesInputs } from "@/app/_context/ContextProvider";
 
 export default function RutasPage() {
   const [routes, setRoutes] = useState([]);

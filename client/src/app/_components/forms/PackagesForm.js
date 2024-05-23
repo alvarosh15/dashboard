@@ -1,9 +1,11 @@
-import { search } from "@/app/utils/searchData";
-import { addSearchHistory } from "@/app/utils/history";
-import Filter from "@/app/components/forms/Filter";
-import ButtonsForm from "@/app/components/forms/ButtonsForm";
-import NumberInput from "@/app/components/forms/NumberInput";
-import IntervalInput from "@/app/components/forms/IntervalInput";
+"use client";
+import { useSession } from "next-auth/react";
+import { search } from "@/app/_utils/searchData";
+import { addSearchHistory } from "@/app/_utils/history";
+import Filter from "@/app/_components/forms/Filter";
+import ButtonsForm from "@/app/_components/forms/ButtonsForm";
+import NumberInput from "@/app/_components/forms/NumberInput";
+import IntervalInput from "@/app/_components/forms/IntervalInput";
 
 export default function PackagesForm({
   setPackages,
@@ -13,6 +15,7 @@ export default function PackagesForm({
   setCurrentPage,
   setSortConfig,
 }) {
+  const { data: session } = useSession();
   const clearInputs = () => {
     setInputs({
       id: "",
@@ -45,7 +48,9 @@ export default function PackagesForm({
       setCurrentPage(1);
       setSortConfig({ key: "", direction: null });
     });
-    addSearchHistory(inputs, "Package");
+    if (session) {
+      addSearchHistory(inputs, "Package");
+    }
   };
 
   const handleSelectChange = (event) => {
@@ -194,6 +199,7 @@ export default function PackagesForm({
         clearInputs={clearInputs}
         setInputs={setInputs}
         inputs={inputs}
+        type={"packages"}
       />
     </form>
   );

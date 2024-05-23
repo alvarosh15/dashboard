@@ -1,9 +1,9 @@
 "use client";
-import TableWithPages from "../../components/table/TableWithPages";
-import StopsForm from "../../components/forms/StopsForm";
+import TableWithPages from "@/app/_components/table/TableWithPages";
+import StopsForm from "@/app/_components/forms/StopsForm";
 import { useState, useEffect } from "react";
-import { search, getDict } from "../../utils/searchData";
-import { useStopsInputs } from "../../context/ContextProvider";
+import { search, getDict } from "@/app/_utils/searchData";
+import { useStopsInputs } from "@/app/_context/ContextProvider";
 
 export default function ParadasPage() {
   const [stops, setStops] = useState([]);

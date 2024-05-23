@@ -1,8 +1,10 @@
-import { search } from "@/app/utils/searchData";
-import { addSearchHistory } from "@/app/utils/history";
-import ButtonsForm from "@/app/components/forms/ButtonsForm";
-import Filter from "@/app/components/forms/Filter";
-import NumberInput from "@/app/components/forms/NumberInput";
+"use client";
+import { useSession } from "next-auth/react";
+import { search } from "@/app/_utils/searchData";
+import { addSearchHistory } from "@/app/_utils/history";
+import ButtonsForm from "@/app/_components/forms/ButtonsForm";
+import Filter from "@/app/_components/forms/Filter";
+import NumberInput from "@/app/_components/forms/NumberInput";
 
 export default function StopsForm({
   setStops,
@@ -12,6 +14,7 @@ export default function StopsForm({
   setCurrentPage,
   setSortConfig,
 }) {
+  const { data: session } = useSession();
   const clearInputs = () => {
     setInputs({
       routeId: "",
@@ -42,7 +45,9 @@ export default function StopsForm({
       setCurrentPage(1);
       setSortConfig({ key: "", direction: null });
     });
-    addSearchHistory(inputs, "Stop");
+    if (session) {
+      addSearchHistory(inputs, "Stop");
+    }
   };
 
   const handleSelectChange = (event) => {
@@ -170,6 +175,7 @@ export default function StopsForm({
         clearInputs={clearInputs}
         setInputs={setInputs}
         inputs={inputs}
+        type={"stops"}
       />
     </form>
   );

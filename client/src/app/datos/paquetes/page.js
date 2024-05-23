@@ -1,9 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
-import { search, getDict } from "../../utils/searchData";
-import PackagesForm from "../../components/forms/PackagesForm";
-import TableWithPages from "../../components/table/TableWithPages";
-import { usePackagesInputs } from "../../context/ContextProvider";
+import { search, getDict } from "@/app/_/utils/searchData";
+import PackagesForm from "@/app/_components/forms/PackagesForm";
+import TableWithPages from "@/app/_components/table/TableWithPages";
+import { usePackagesInputs } from "@/app/_context/ContextProvider";
 
 export default function PackagesPage() {
   const [packages, setPackages] = useState([]);

@@ -14,7 +14,6 @@ export async function search(url, inputs, sort = null, page = 1) {
   }
   url += `page=${page}`;
 
-  console.log(url);
   let res = await fetch(url);
   let data = await res.json();
   return data;

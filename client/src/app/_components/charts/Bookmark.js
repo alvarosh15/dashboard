@@ -1,4 +1,5 @@
-import { removeLikeChart, addLikeChart } from "@/app/utils/charts";
+import { removeLikeChart, addLikeChart } from "@/app/_utils/charts";
+import { useSession } from "next-auth/react";
 
 export default function Bookmark({
   chartId,
@@ -7,6 +8,8 @@ export default function Bookmark({
   updatedItem,
   setUpdatedItem,
 }) {
+  const { data: session } = useSession();
+
   const addLike = async (chartId, city) => {
     try {
       await addLikeChart(chartId, city);
@@ -25,11 +28,21 @@ export default function Bookmark({
     }
   };
 
+  const handleClick = (chartId) => {
+    if (session) {
+      if (likedChartsIds.includes(chartId)) {
+        removeLike(chartId);
+      } else {
+        addLike(chartId, city);
+      }
+    }
+  };
+
   return (
     <div>
       {likedChartsIds.includes(chartId) ? (
         <span
-          onClick={() => removeLike(chartId)}
+          onClick={() => handleClick(chartId)}
           className="absolute cursor-pointer hidden text-sky-800 bg-sky-100 rounded-md p-1 z-50 m-1 group-hover:block"
         >
           <svg
@@ -48,7 +61,7 @@ export default function Bookmark({
         </span>
       ) : (
         <span
-          onClick={() => addLike(chartId, city)}
+          onClick={() => handleClick(chartId, city)}
           className="absolute cursor-pointer hidden text-sky-800 bg-sky-100 rounded-md p-1 z-50 m-1 group-hover:block"
         >
           <svg

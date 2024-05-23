@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { OneByOne, TwoByOne, ThreeByOne } from "@/app/components/charts/Boxes";
-import { Pie, Bar, Lines, Block } from "@/app/components/charts/Charts";
-import Bookmark from "./Bookmark";
-import DynamicChartSkeleton from "./DynamicChartSkeleton";
+import { OneByOne, TwoByOne, ThreeByOne } from "@/app/_components/charts/Boxes";
+import { Pie, Bar, Lines, Block } from "@/app/_components/charts/Charts";
+import Bookmark from "@/app/_components/charts/Bookmark";
+import DynamicChartSkeleton from "@/app/_components/charts/DynamicChartSkeleton";
 import {
   numberOfRoutesByScore,
   numberOfRoutesByDay,
@@ -14,7 +14,7 @@ import {
   numberOfRoutesByCity,
   routesByDepartureHour,
   avgPackagePerRoute,
-} from "@/app/utils/statistics";
+} from "@/app/_utils/statistics";
 
 const sizeMapping = {
   "1x1": OneByOne,

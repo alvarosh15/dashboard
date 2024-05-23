@@ -1,10 +1,10 @@
 "use client";
 import { useState, useEffect } from "react";
-import { getLocAndLatFromId } from "@/app/utils/map";
-import { useCurrentIds } from "@/app/context/ContextProvider";
-import Map from "@/app/components/map/Map.js";
-import RouteSelector from "@/app/components/map/RouteSelector";
-import MapFormButtons from "@/app/components/map/MapFormButtons";
+import { getLocAndLatFromId } from "@/app/_utils/map";
+import { useCurrentIds } from "@/app/_context/ContextProvider";
+import Map from "@/app/_components/map/Map.js";
+import RouteSelector from "@/app/_components/map/RouteSelector";
+import MapFormButtons from "@/app/_components/map/MapFormButtons";
 
 export default function MapPage() {
   const { ids, setIds } = useCurrentIds();

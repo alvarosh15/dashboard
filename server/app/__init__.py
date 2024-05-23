@@ -17,10 +17,6 @@ def create_app():
     jwt = JWTManager(app)
 
     CORS(app)
-    
-    # Descomentar si queremos que se creen las tablas
-    #with app.app_context():
-        #db.create_all()
 
     register_blueprints(app)
 

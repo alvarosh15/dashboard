@@ -1,6 +1,9 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, send_file
 from app.models import Package, Status
 from app.database import db
+from flask_jwt_extended import jwt_required
+import csv
+import io
 
 package_bp = Blueprint('package_bp', __name__)
 
@@ -131,6 +134,138 @@ def return_packages():
                           "StopId": package.stop_id} for package in packages]
 
         return jsonify({"data": packages_list, "totalPages": total_pages}), 200
+    except Exception as e:
+        print(e)
+        return jsonify({"message": "Internal Server Error"}), 500
+
+@package_bp.route('/packages/download_csv', methods=['GET'])
+@jwt_required()
+def download_packages_csv():
+    try:
+        query = Package.query
+
+        package_id = request.args.get('id')
+        status = request.args.getlist('state')
+        dict_status = {
+            "Intento de entrega": "Delivery_attempted",
+            "Entregado": "Delivered",
+            "Rechazado": "Rejected",
+        }
+        start_time_window = request.args.get('startTimeWindow')
+        end_time_window = request.args.get('endTimeWindow')
+        low_planned_service_time = request.args.get('lowPlannedServiceTime')
+        high_planned_service_time = request.args.get('highPlannedServiceTime')
+        min_depth = request.args.get('minDepth')
+        max_depth = request.args.get('maxDepth')
+        min_width = request.args.get('minWidth')
+        max_width = request.args.get('maxWidth')
+        min_height = request.args.get('minHeight')
+        max_height = request.args.get('maxHeight')
+        route_id = request.args.get('routeId')
+        stop_id = request.args.get('stopId')
+
+        if package_id:
+            query = query.filter(Package.package_id == package_id)
+
+        if status:
+            status_ids = []
+            conditions = []
+            parameterized_status = [dict_status[state] for state in status if state != 'Sin datos']
+
+            if parameterized_status:
+                status_records = Status.query.filter(Status.status_name.in_(parameterized_status)).all()
+                status_ids = [status.status_id for status in status_records]
+
+            if 'Sin datos' in status:
+                conditions.append(Package.status_id == None)
+
+            if status_ids:
+                conditions.append(Package.status_id.in_(status_ids))
+
+            if conditions:
+                query = query.filter(db.or_(*conditions))
+
+        if start_time_window and end_time_window:
+            query = query.filter(Package.start_time_window.between(start_time_window, end_time_window))
+        elif start_time_window:
+            query = query.filter(Package.start_time_window >= start_time_window)
+        elif end_time_window:
+            query = query.filter(Package.start_time_window <= end_time_window)
+
+        if low_planned_service_time and high_planned_service_time:
+            query = query.filter(Package.planned_service_time.between(low_planned_service_time, high_planned_service_time))
+        elif low_planned_service_time:
+            query = query.filter(Package.planned_service_time >= low_planned_service_time)
+        elif high_planned_service_time:
+            query = query.filter(Package.planned_service_time <= high_planned_service_time)
+
+        if min_depth and max_depth:
+            query = query.filter(Package.depth.between(min_depth, max_depth))
+        elif min_depth:
+            query = query.filter(Package.depth >= min_depth)
+        elif max_depth:
+            query = query.filter(Package.depth <= max_depth)
+
+        if min_width and max_width:
+            query = query.filter(Package.width.between(min_width, max_width))
+        elif min_width:
+            query = query.filter(Package.width >= min_width)
+        elif max_width:
+            query = query.filter(Package.width <= max_width)
+
+        if min_height and max_height:
+            query = query.filter(Package.height.between(min_height, max_height))
+        elif min_height:
+            query = query.filter(Package.height >= min_height)
+        elif max_height:
+            query = query.filter(Package.height <= max_height)
+
+        if route_id:
+            query = query.filter(Package.route_id == route_id)
+
+        if stop_id:
+            query = query.filter(Package.stop_id == stop_id)
+
+        packages = query.all()
+
+        status_dict = {status.status_id: status.status_name for status in Status.query.all()}
+        status_dict[None] = 'Sin datos'
+        status_translation = {
+            'Delivery_attempted': 'Intento de entrega',
+            'Delivered': 'Entregado',
+            'Rejected': 'Rechazado'
+        }
+
+        output = io.StringIO()
+        writer = csv.writer(output)
+        
+        writer.writerow(['Código del Paquete', 'Estado', 'Hora de inicio de entrega', 'Hora de fin de entrega', 'Tiempo de servicio planeado',
+                         'Profundidad', 'Altura', 'Anchura', 'Código de la Ruta', 'Código de la Parada'])
+
+        for package in packages:
+            status_name = status_dict.get(package.status_id, '-')
+            translated_status_name = status_translation.get(status_name, status_name)
+            writer.writerow([
+                package.package_id,
+                translated_status_name,
+                package.start_time_window.strftime('%Y-%m-%d %H:%M:%S') if package.start_time_window else None,
+                package.end_time_window.strftime('%Y-%m-%d %H:%M:%S') if package.end_time_window else None,
+                package.planned_service_time,
+                package.depth,
+                package.height,
+                package.width,
+                package.route_id,
+                package.stop_id
+            ])
+
+        output.seek(0)
+        
+        return send_file(
+            io.BytesIO(output.getvalue().encode()),
+            mimetype='text/csv',
+            as_attachment=True,
+            download_name='packages.csv'
+        )
     except Exception as e:
         print(e)
         return jsonify({"message": "Internal Server Error"}), 500

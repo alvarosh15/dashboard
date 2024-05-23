@@ -1,5 +1,5 @@
-import { search } from "@/app/utils/searchData";
-import { useCurrentIds } from "../../context/ContextProvider";
+import { search } from "@/app/_utils/searchData";
+import { useCurrentIds } from "@/app/_context/ContextProvider";
 
 export default function Table({
   headers,

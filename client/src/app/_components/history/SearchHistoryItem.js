@@ -1,9 +1,9 @@
-import { useRoutesInputs } from "@/app/context/ContextProvider";
-import { useStopsInputs } from "@/app/context/ContextProvider";
-import { usePackagesInputs } from "@/app/context/ContextProvider";
+import { useRoutesInputs } from "@/app/_context/ContextProvider";
+import { useStopsInputs } from "@/app/_context/ContextProvider";
+import { usePackagesInputs } from "@/app/_context/ContextProvider";
 import Link from "next/link";
-import DeleteItem from "@/app/components/history/DeleteItem";
-import { deleteHistoryItem } from "@/app/utils/history";
+import DeleteItem from "@/app/_components/history/DeleteItem";
+import { deleteHistoryItem } from "@/app/_utils/history";
 
 const keyDictionary = {
   startDate: "Fecha de inicio ≥",

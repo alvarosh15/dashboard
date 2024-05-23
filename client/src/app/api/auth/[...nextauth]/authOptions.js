@@ -1,6 +1,6 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import { getJWT } from "@/app/utils/authentication";
+import { getJWT } from "@/app/_utils/authentication";
 
 export const authOptions = {
   providers: [

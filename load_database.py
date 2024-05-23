@@ -40,6 +40,10 @@ def processRouteData(cursor, file_path, isEvaluation=False):
             longitude = stop_data['lng']
             type = stop_data['type']
             zone_id = stop_data['zone_id']
+            if not isNaN(stop_data['zone_id']):
+                zone_id = stop_data['zone_id']
+            else: 
+                zone_id = None
 
             query = f"SELECT TYPEID FROM Type WHERE TYPENAME = '{type}';"
             cursor.execute(query)

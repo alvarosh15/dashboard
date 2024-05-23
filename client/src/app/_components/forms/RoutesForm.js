@@ -1,9 +1,11 @@
-import { search } from "@/app/utils/searchData";
-import { addSearchHistory } from "@/app/utils/history";
-import Filter from "@/app/components/forms/Filter";
-import ButtonsForm from "@/app/components/forms/ButtonsForm";
-import IntervalInput from "@/app/components/forms/IntervalInput";
-import NumberInput from "@/app/components/forms/NumberInput";
+"use client";
+import { useSession } from "next-auth/react";
+import { search } from "@/app/_utils/searchData";
+import { addSearchHistory } from "@/app/_utils/history";
+import Filter from "@/app/_components/forms/Filter";
+import ButtonsForm from "@/app/_components/forms/ButtonsForm";
+import IntervalInput from "@/app/_components/forms/IntervalInput";
+import NumberInput from "@/app/_components/forms/NumberInput";
 
 export default function RoutesForm({
   setRoutes,
@@ -14,6 +16,7 @@ export default function RoutesForm({
   setSortConfig,
   stationCodes,
 }) {
+  const { data: session } = useSession();
   const clearInputs = () => {
     setInputs({
       id: "",
@@ -42,7 +45,9 @@ export default function RoutesForm({
       setCurrentPage(1);
       setSortConfig({ key: "", direction: null });
     });
-    addSearchHistory(inputs, "Route");
+    if (session) {
+      addSearchHistory(inputs, "Route");
+    }
   };
 
   const handleSelectChange = (event) => {
@@ -172,6 +177,7 @@ export default function RoutesForm({
         clearInputs={clearInputs}
         setInputs={setInputs}
         inputs={inputs}
+        type={"routes"}
       />
     </form>
   );

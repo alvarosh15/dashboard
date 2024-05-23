@@ -1,4 +1,6 @@
-export default function ButtonsForm({ clearInputs, setInputs, inputs }) {
+import { downloadCsv } from "@/app/_utils/downloadCsv";
+
+export default function ButtonsForm({ clearInputs, setInputs, inputs, type }) {
   const handleLimitChange = (event) => {
     const newLimit = event.target.value;
     setInputs((prevInputs) => ({
@@ -9,6 +11,13 @@ export default function ButtonsForm({ clearInputs, setInputs, inputs }) {
 
   return (
     <div className="flex flex-row gap-2 justify-end">
+      <button
+        onClick={() => downloadCsv(inputs, type)}
+        type="button"
+        className="bg-sky-100 text-sky-800 rounded-md p-2"
+      >
+        Descargar csv
+      </button>
       <select
         value={inputs.limit}
         onChange={handleLimitChange}

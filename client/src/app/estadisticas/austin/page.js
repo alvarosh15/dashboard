@@ -1,4 +1,4 @@
-import PageCharts from "@/app/components/charts/PageCharts";
+import PageCharts from "@/app/_components/charts/PageCharts";
 
 export default function EstadisticasAustinPage() {
   const city = "Austin";

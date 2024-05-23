@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
-import { search } from "../../utils/searchData";
+import { search } from "@/app/_utils/searchData";
 
 export default function DataPagination({
   totalPages,

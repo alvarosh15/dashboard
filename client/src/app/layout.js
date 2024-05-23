@@ -1,8 +1,8 @@
 import { Inter } from "next/font/google";
-import "./globals.css";
-import SideNav from "./components/Sidenav";
-import ContextProvider from "./context/ContextProvider";
-import { NextAuthProvider } from "./provider";
+import "@/app/globals.css";
+import SideNav from "@/app/_components/Sidenav";
+import ContextProvider from "@/app/_context/ContextProvider";
+import { NextAuthProvider } from "@/app/provider";
 
 const inter = Inter({ subsets: ["latin"] });
 

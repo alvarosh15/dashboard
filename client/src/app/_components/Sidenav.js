@@ -2,7 +2,7 @@
 import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
 import Image from "next/image";
-import ActiveLink from "./ActiveLink";
+import ActiveLink from "@/app/_components/ActiveLink";
 
 export default function SideNav() {
   const { data: session } = useSession();

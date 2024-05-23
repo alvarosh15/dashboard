@@ -1,4 +1,4 @@
-import axiosInstance from "./axiosInstance";
+import axiosInstance from "@/app/_utils/axiosInstance";
 
 export async function addSearchHistory(input, type) {
   try {

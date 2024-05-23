@@ -1,5 +1,5 @@
 import Link from "next/link";
-import LinkSideNav from "../components/ActiveLink";
+import LinkSideNav from "@/app/_components/ActiveLink";
 
 export default function EstadisticasLayout({ children }) {
   return (

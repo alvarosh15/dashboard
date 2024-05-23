@@ -1,4 +1,4 @@
-import { OneByOne, TwoByOne, ThreeByOne } from "@/app/components/charts/Boxes";
+import { OneByOne, TwoByOne, ThreeByOne } from "@/app/_components/charts/Boxes";
 
 const sizeMapping = {
   "1x1": OneByOne,

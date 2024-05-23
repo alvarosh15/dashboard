@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
-import { getLikedCharts, getLikedChartsIds } from "@/app/utils/charts";
-import DynamicChart from "@/app/components/charts/DynamicChart";
+import { getLikedCharts, getLikedChartsIds } from "@/app/_utils/charts";
+import DynamicChart from "@/app/_components/charts/DynamicChart";
 
 export default function LikedCharts() {
   const [charts, setCharts] = useState([]);
