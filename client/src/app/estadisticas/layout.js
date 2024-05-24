@@ -4,7 +4,7 @@ import LinkSideNav from "@/app/_components/ActiveLink";
 export default function EstadisticasLayout({ children }) {
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex flex-row gap-4">
+      <div className="flex flex-wrap md:flex-row justify-center md:justify-start gap-4">
         <Link href="/estadisticas/general">
           <LinkSideNav text="General"></LinkSideNav>
         </Link>

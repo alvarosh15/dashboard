@@ -8,11 +8,11 @@ export default function SideNav() {
   const { data: session } = useSession();
 
   return (
-    <div className="bg-slate-50 flex h-full flex-col px-3 py-3 md:px-2">
-      <h1 className="w-32 flex justify-center items-center text-sky-800 font-extrabold text-3xl md:w-full md:h-24">
+    <div className="bg-slate-50 flex h-full flex-col gap-2 md:gap-0 px-3 py-3 md:px-2">
+      <h1 className="w-32 ml-5 md:ml-0 flex justify-center items-center text-sky-800 font-extrabold text-3xl md:w-full md:h-24">
         Dashboard
       </h1>
-      <div className="flex grow flex-row justify-start space-x-2 md:flex-col md:space-x-0 md:space-y-2">
+      <div className="flex grow flex-row justify-center md:justify-start space-x-2 md:flex-col md:space-x-0 md:space-y-2">
         <Link href="/">
           <ActiveLink text="Inicio">
             <svg

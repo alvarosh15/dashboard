@@ -44,14 +44,73 @@ export default function Table({
   return (
     <div>
       <div className="flex flex-wrap justify-around md:hidden">
+        <div className="flex flex-wrap justify-around gap-1">
+          <p className="text-sky-800 font-bold">Ordenar por:</p>
+          {headers.map((header, index) => (
+            <button
+              key={index}
+              className="text-sky-800 font-medium"
+              onClick={() => requestSort(keys[index])}
+            >
+              {header}
+              {sortConfig && sortConfig.key === keys[index] && (
+                <span>
+                  {sortConfig.direction === "ASC"
+                    ? " ▲"
+                    : sortConfig.direction === "DESC"
+                    ? " ▼"
+                    : ""}
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
         {data.map((item, index) => (
           <div
             key={index}
             className="bg-white shadow-sm rounded-md p-4 m-2 w-full"
           >
-            {keys.map((key, index) => (
-              <div key={index} className="text-sky-800">
-                <strong>{headers[index]}:</strong> {item[key]}
+            {keys.map((key, idx) => (
+              <div
+                key={idx}
+                className="text-sky-800 flex items-center justify-between"
+              >
+                <strong>{headers[idx]}:</strong>
+                {key === "RouteId" ? (
+                  <span className="flex items-center gap-1">
+                    <span onClick={() => addToMap(item[key])}>
+                      {ids.includes(item[key]) ? (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          fill="currentColor"
+                          className="bi bi-geo-alt-fill"
+                          viewBox="0 0 16 16"
+                        >
+                          <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6" />
+                        </svg>
+                      ) : (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          fill="currentColor"
+                          className="bi bi-geo-alt"
+                          viewBox="0 0 16 16"
+                        >
+                          <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A32 32 0 0 1 8 14.58a32 32 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10" />
+                          <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4m0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+                        </svg>
+                      )}
+                    </span>
+                    {item[key]}
+                  </span>
+                ) : item[key] ? (
+                  item[key]
+                ) : (
+                  "-"
+                )}
               </div>
             ))}
           </div>
@@ -85,8 +144,8 @@ export default function Table({
           {data.length > 0 &&
             data.map((elem, index) => (
               <tr className="font-mono text-center" key={index}>
-                {keys.map((key, index) => (
-                  <td key={index}>
+                {keys.map((key, idx) => (
+                  <td key={idx}>
                     {key === "RouteId" ? (
                       <div className="flex justify-center items-center gap-1">
                         <span onClick={() => addToMap(elem[key])}>
