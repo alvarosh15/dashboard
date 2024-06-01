@@ -14,7 +14,6 @@ stop_column_mapping = {
     "TypeId": "type_id",
     "ZoneId": "zone_id",
     "OrderPosition": "order_position",
-    "TimeToNext": "time_to_next"
 }
 
 @stop_bp.route('/stops', methods=['GET'])
@@ -33,8 +32,6 @@ def return_stops():
         }
         zone_id = request.args.get('zoneId')
         position = request.args.get('posicion')
-        low_time_to_next = request.args.get('lowTimeToNext')
-        high_time_to_next = request.args.get('highTimeToNext')
 
         sort_key = request.args.get('sort')
         sort_direction = request.args.get('direction')
@@ -60,12 +57,6 @@ def return_stops():
             query = query.filter(Stop.zone_id == zone_id)
         if position:
             query = query.filter(Stop.order_position == position)
-        if low_time_to_next and high_time_to_next:
-            query = query.filter(Stop.time_to_next.between(low_time_to_next, high_time_to_next))
-        elif low_time_to_next:
-            query = query.filter(Stop.time_to_next >= low_time_to_next)
-        elif high_time_to_next:
-            query = query.filter(Stop.time_to_next <= high_time_to_next)
 
         total_count = query.count()
         total_pages = (total_count + limit - 1) // limit
@@ -81,7 +72,7 @@ def return_stops():
         stops = query.paginate(page=page, per_page=limit, error_out=False).items
 
         stops_list = [{"RouteId": stop.route_id, "StopId": stop.stop_id, "Latitude": stop.latitude, "Longitude": stop.longitude,
-                       "TypeId": stop.type_id, "ZoneId": stop.zone_id, "OrderPosition": stop.order_position, "TimeToNext": stop.time_to_next} for stop in stops]
+                       "TypeId": stop.type_id, "ZoneId": stop.zone_id, "OrderPosition": stop.order_position} for stop in stops]
 
         return jsonify({"data": stops_list, "totalPages": total_pages}), 200
     except Exception as e:
@@ -104,8 +95,6 @@ def download_stops_csv():
         }
         zone_id = request.args.get('zoneId')
         position = request.args.get('posicion')
-        low_time_to_next = request.args.get('lowTimeToNext')
-        high_time_to_next = request.args.get('highTimeToNext')
 
         query = Stop.query
 
@@ -125,12 +114,6 @@ def download_stops_csv():
             query = query.filter(Stop.zone_id == zone_id)
         if position:
             query = query.filter(Stop.order_position == position)
-        if low_time_to_next and high_time_to_next:
-            query = query.filter(Stop.time_to_next.between(low_time_to_next, high_time_to_next))
-        elif low_time_to_next:
-            query = query.filter(Stop.time_to_next >= low_time_to_next)
-        elif high_time_to_next:
-            query = query.filter(Stop.time_to_next <= high_time_to_next)
 
         stops = query.all()
 
@@ -144,7 +127,7 @@ def download_stops_csv():
         output = io.StringIO()
         writer = csv.writer(output)
         
-        writer.writerow(['Código de la ruta', 'Latitud', 'Longitud', 'Posición', 'Código de la parada', 'Tiempo al siguiente', 'Tipo', 'Zona',])
+        writer.writerow(['Código de la ruta', 'Latitud', 'Longitud', 'Posición', 'Código de la parada', 'Tipo', 'Zona',])
         
         for stop in stops:
             type_name = type_dict.get(stop.type_id, '-')
@@ -156,7 +139,6 @@ def download_stops_csv():
                 stop.longitude,
                 stop.order_position,
                 stop.stop_id,
-                stop.time_to_next,
                 translated_type_name,
                 stop.zone_id,
             ])

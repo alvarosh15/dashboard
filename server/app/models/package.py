@@ -2,6 +2,12 @@ from app.database import db
 from sqlalchemy import ForeignKeyConstraint
 from sqlalchemy.dialects.mysql import ENUM
 
+
+class AvgPackagesPerCity(db.Model):
+    __tablename__ = 'avg_packages_per_city'
+    city = db.Column(db.String(50), primary_key=True)
+    avg_packages_per_route = db.Column(db.Float)
+
 class Status(db.Model):
     __tablename__ = 'status'
     

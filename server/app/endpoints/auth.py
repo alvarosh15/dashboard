@@ -6,7 +6,7 @@ from flask_jwt_extended import create_access_token
 auth_bp = Blueprint('auth_bp', __name__)
 
 @auth_bp.route('/auth/google', methods=['POST'])
-def google_auth():
+def generateJWT():
     try:
         data = request.json
         user_info = data.get("user")
@@ -29,7 +29,6 @@ def google_auth():
             user_id = existing_user.id
 
         access_token = create_access_token(identity={"id": user_id, "name": name, "email": email})
-        print("Access token:", access_token)
         return jsonify({"AccessToken": access_token}), 200
     except Exception as e:
         print(e)

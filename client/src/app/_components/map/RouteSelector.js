@@ -19,9 +19,15 @@ export default function RouteSelector({
   return (
     <div
       onClick={handleClick}
-      className={`${activeId === id ? "bg-sky-100" : ""} ${
-        editIds ? "bg-red-100 text-red-800" : ""
-      } p-2 rounded-md cursor-pointer text-sky-800 font-mono`}
+      className={`${
+        activeId === id
+          ? editIds
+            ? "bg-red-200 text-red-800"
+            : "bg-sky-100"
+          : ""
+      } ${
+        editIds ? "bg-red-100 text-red-800" : "text-sky-800"
+      } p-2 rounded-md cursor-pointer font-mono`}
     >
       {id}
     </div>

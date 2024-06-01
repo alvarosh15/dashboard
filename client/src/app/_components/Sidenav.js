@@ -9,9 +9,19 @@ export default function SideNav() {
 
   return (
     <div className="bg-slate-50 flex h-full flex-col gap-2 md:gap-0 px-3 py-3 md:px-2">
-      <h1 className="w-32 ml-5 md:ml-0 flex justify-center items-center text-sky-800 font-extrabold text-3xl md:w-full md:h-24">
-        Dashboard
-      </h1>
+      <div className="flex justify-between items-center md:justify-center md:flex-col">
+        <h1 className="w-32 ml-5 md:ml-0 flex justify-center items-center text-sky-800 font-extrabold text-3xl md:w-full md:h-24">
+          Dashboard
+        </h1>
+        {session && (
+          <button
+            onClick={() => signOut()}
+            className="text-sky-800 font-normal text-sm md:hidden"
+          >
+            Cerrar sesión
+          </button>
+        )}
+      </div>
       <div className="flex grow flex-row justify-center md:justify-start space-x-2 md:flex-col md:space-x-0 md:space-y-2">
         <Link href="/">
           <ActiveLink text="Inicio">
@@ -70,7 +80,7 @@ export default function SideNav() {
           </ActiveLink>
         </Link>
       </div>
-      <div className="mt-auto">
+      <div className="mt-auto hidden md:block">
         {session && (
           <div className="p-4 flex flex-col items-center justify-center">
             <div className="flex flex-row items-center justify-center space-x-2">

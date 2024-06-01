@@ -21,8 +21,9 @@ export default function Home() {
   return (
     <div className="flex flex-col h-full justify-center items-center gap-2">
       <h2 className="font-semibold text-sky-800 text-2xl">Inicia sesión</h2>
-      <h3 className="font-normal text-sky-800 text-base">
-        Para poder ver tus gráficas favoritas y guardar tu historial de búsqueda
+      <h3 className="font-normal text-center text-sky-800 text-base">
+        Para poder ver tus gráficas favoritas, guardar tu historial de búsqueda
+        y descargar datos en formato CSV.
       </h3>
       <button
         onClick={() => signIn()}

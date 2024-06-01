@@ -136,7 +136,7 @@ export const Lines = ({
 export const Block = ({ data, title, colorPalette }) => {
   return (
     <div className="flex flex-col justify-center items-center rounded-md h-full w-full bg-white text-sky-800 shadow-sm p-4">
-      <h2 className="text-xl font-semibold ">{title}</h2>
+      <h2 className="text-xl font-semibold text-center">{title}</h2>
       {data &&
         Object.entries(data).map(([key, value], index) => (
           <div

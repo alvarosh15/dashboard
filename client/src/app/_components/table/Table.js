@@ -43,7 +43,7 @@ export default function Table({
 
   return (
     <div>
-      <div className="flex flex-wrap justify-around md:hidden">
+      <div className="flex flex-wrap justify-around lg:hidden">
         <div className="flex flex-wrap justify-around gap-1">
           <p className="text-sky-800 font-bold">Ordenar por:</p>
           {headers.map((header, index) => (
@@ -117,7 +117,7 @@ export default function Table({
         ))}
       </div>
 
-      <table className="text-sky-800 hidden md:table table-auto text-sm w-full mb-2">
+      <table className="text-sky-800 hidden lg:table table-auto text-sm w-full mb-2">
         <thead>
           <tr>
             {headers.map((header, index) => (

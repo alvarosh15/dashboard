@@ -17,7 +17,7 @@ export default function TableWithPages({
   return (
     <div>
       {data.length > 0 ? (
-        <div className="rounded-md bg-transparent md:bg-white md:shadow-sm md:p-3">
+        <div className="rounded-md bg-transparent lg:bg-white lg:shadow-sm lg:p-3">
           <Table
             headers={headers}
             keys={keys}

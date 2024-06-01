@@ -38,6 +38,20 @@ export default function DynamicChartSkeleton({ size, type }) {
               ></div>
             ))}
           </div>
+        ) : type === "lines" ? (
+          <svg
+            width="80%"
+            height="80%"
+            viewBox="0 0 100 100"
+            className="bg-gray-100"
+          >
+            <polyline
+              points="10,90 30,40 50,20 70,60 90,10"
+              className="stroke-current text-gray-300"
+              fill="none"
+              strokeWidth="2"
+            />
+          </svg>
         ) : (
           <div className="animate-pulse h-6 bg-gray-300 rounded w-3/6"></div>
         )}

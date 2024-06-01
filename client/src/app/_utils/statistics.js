@@ -121,3 +121,14 @@ export async function avgPackagePerRoute(city) {
 
   return data;
 }
+
+export async function busiestDay(city) {
+  let url = `${process.env.NEXT_PUBLIC_API_URL}/busiest_day?`;
+  if (city) {
+    url += `city=${city}`;
+  }
+  const res = await fetch(url, { cache: "no-store" });
+  const data = await res.json().then((json) => json.data);
+
+  return data;
+}

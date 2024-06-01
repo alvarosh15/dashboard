@@ -19,7 +19,6 @@ export const authOptions = {
         const jwtToken = await getJWT(user);
         token.accessToken = jwtToken;
       }
-      console.log(token);
       return token;
     },
     async session({ session, token }) {

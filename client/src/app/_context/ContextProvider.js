@@ -39,8 +39,6 @@ export default function ContextProvider({ children }) {
     type: [],
     zoneId: "",
     posicion: "",
-    lowTimeToNext: "",
-    highTimeToNext: "",
     limit: 20,
   });
   const [packagesInputs, setPackagesInputs] = useState({

@@ -41,7 +41,6 @@ class Stop(db.Model):
     type_id = db.Column(db.Integer, db.ForeignKey('type.type_id'))
     zone_id = db.Column(db.String(10))
     order_position = db.Column(db.Integer)
-    time_to_next = db.Column(db.Float)
     
     type = db.relationship('Type', backref=db.backref('stops', lazy=True))
     route = db.relationship('Route', backref=db.backref('stops', lazy=True))

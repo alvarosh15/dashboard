@@ -1,6 +1,10 @@
 import { downloadCsv } from "@/app/_utils/downloadCsv";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
 
 export default function ButtonsForm({ clearInputs, setInputs, inputs, type }) {
+  const { data: session } = useSession();
+
   const handleLimitChange = (event) => {
     const newLimit = event.target.value;
     setInputs((prevInputs) => ({
@@ -11,13 +15,25 @@ export default function ButtonsForm({ clearInputs, setInputs, inputs, type }) {
 
   return (
     <div className="flex flex-row gap-2 justify-end">
-      <button
-        onClick={() => downloadCsv(inputs, type)}
-        type="button"
-        className="bg-sky-100 text-sky-800 rounded-md p-2"
-      >
-        Descargar csv
-      </button>
+      {session ? (
+        <button
+          onClick={() => downloadCsv(inputs, type)}
+          type="button"
+          className="bg-sky-100 text-sky-800 rounded-md p-2"
+        >
+          Descargar csv
+        </button>
+      ) : (
+        <Link href="/">
+          <button
+            onClick={() => downloadCsv(inputs, type)}
+            type="button"
+            className="bg-sky-100 text-sky-800 rounded-md p-2"
+          >
+            Descargar csv
+          </button>
+        </Link>
+      )}
       <select
         value={inputs.limit}
         onChange={handleLimitChange}

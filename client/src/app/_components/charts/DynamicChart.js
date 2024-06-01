@@ -14,6 +14,7 @@ import {
   numberOfRoutesByCity,
   routesByDepartureHour,
   avgPackagePerRoute,
+  busiestDay,
 } from "@/app/_utils/statistics";
 
 const sizeMapping = {
@@ -38,6 +39,7 @@ const dataFetcherMapping = {
   numberOfRoutesByCity: numberOfRoutesByCity,
   routesByDepartureHour: routesByDepartureHour,
   avgPackagePerRoute: avgPackagePerRoute,
+  busiestDay: busiestDay,
 };
 
 export default function DynamicChart({

@@ -26,8 +26,6 @@ export default function StopsForm({
       type: [],
       zoneId: "",
       posicion: "",
-      lowTimeToNext: "",
-      highTimeToNext: "",
       limit: 20,
     });
     setStops([]);
@@ -156,18 +154,6 @@ export default function StopsForm({
           inputs={inputs}
           field={"posicion"}
           placeHolder={"Posición"}
-          handleChange={handleChange}
-        />
-        <NumberInput
-          inputs={inputs}
-          field={"lowTimeToNext"}
-          placeHolder={"Tiempo mínimo al siguiente"}
-          handleChange={handleChange}
-        />
-        <NumberInput
-          inputs={inputs}
-          field={"highTimeToNext"}
-          placeHolder={"Tiempo máximo al siguiente"}
           handleChange={handleChange}
         />
       </div>

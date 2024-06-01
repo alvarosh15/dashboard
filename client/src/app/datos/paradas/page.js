@@ -69,7 +69,6 @@ export default function ParadasPage() {
           "Longitud",
           "Posición",
           "Codigo de la parada",
-          "Tiempo al siguiente",
           "Tipo",
           "Zona",
         ]}
@@ -79,7 +78,6 @@ export default function ParadasPage() {
           "Longitude",
           "OrderPosition",
           "StopId",
-          "TimeToNext",
           "TypeId",
           "ZoneId",
         ]}

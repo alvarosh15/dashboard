@@ -1,8 +1,8 @@
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask import Blueprint, jsonify, request
-from sqlalchemy import asc, func
+from sqlalchemy import desc, asc, func
 from sqlalchemy.orm import aliased
-from app.models import Route, Package, Status, Score, Liked, Chart, ChartType
+from app.models import Route, Package, Status, Score, Liked, Chart, ChartType, AvgPackagesPerCity
 from app.database import db
 
 charts_bp = Blueprint('charts_bp', __name__)
@@ -10,12 +10,16 @@ charts_bp = Blueprint('charts_bp', __name__)
 @charts_bp.route('/charts/general', methods=['GET'])
 def get_general_charts():
     try:
-        type_ids = ChartType.query.filter(ChartType.type.in_(['General', 'City'])).all()
-        type_ids = [type_.id for type_ in type_ids]
+        general_type_id = ChartType.query.filter_by(type='General').first().id
+        city_type_id = ChartType.query.filter_by(type='City').first().id
 
-        charts = Chart.query.filter(Chart.type_id.in_(type_ids)).order_by(asc(Chart.position)).all()
+        general_charts = Chart.query.filter_by(type_id=general_type_id).order_by(asc(Chart.position)).all()
+        city_charts = Chart.query.filter_by(type_id=city_type_id).order_by(asc(Chart.position)).all()
+
+        charts = general_charts + city_charts
 
         items = [{"Id": chart.id, "Config": chart.config} for chart in charts]
+        
         return jsonify({'data': items}), 200
     except Exception as e:
         return jsonify({"message": "Internal Server Error"}), 500
@@ -61,7 +65,7 @@ def post_liked_chart():
         chart_id = data.get('chartId')
         city = data.get('city', '') 
 
-        if Liked.query.filter_by(user_id=user_id, chart_id=chart_id).first():
+        if Liked.query.filter_by(user_id=user_id, chart_id=chart_id, city=city).first():
             return jsonify({"message": "You already liked this chart"}), 409
 
         new_like = Liked(
@@ -75,15 +79,18 @@ def post_liked_chart():
 
         return jsonify({"message": "Liked chart saved successfully"}), 201
     except Exception as e:
+        print(e)
         return jsonify({"message": "Internal Server Error"}), 500
 
 @charts_bp.route('/liked_charts/<int:id>', methods=['DELETE'])
 @jwt_required()
-def delete_history(id):
+def delete_liked_chart(id):
     try:
         user_id = get_jwt_identity().get('id')
-        
-        liked_item = Liked.query.filter_by(chart_id=id).first()
+        data = request.get_json()
+        city = data.get('city')
+
+        liked_item = Liked.query.filter_by(chart_id=id, user_id=user_id, city=city).first()
 
         if not liked_item or liked_item.user_id != user_id:
             return jsonify({"message": "Item not found or access denied"}), 404
@@ -101,7 +108,7 @@ def get_liked_charts_id():
     try:
         user_id = get_jwt_identity()['id']
         liked_charts = Liked.query.filter_by(user_id=user_id).all()
-        data = [liked.chart_id for liked in liked_charts]
+        data = [f"{liked.chart_id}_{liked.city}" for liked in liked_charts]
         return jsonify({'data': data}), 200
     except Exception as e:
         return jsonify({"message": "Internal Server Error"}), 500
@@ -155,7 +162,6 @@ def packages_by_status():
             query = query.join(Route, Package.route_id == Route.route_id).filter(Route.station_code.like(f"{city_station_code[city]}%"))
 
         results = query.all()
-        print(results)
 
         package_by_status = {row.StatusName if row.StatusName else 'Sin datos': row.Count for row in results}
 
@@ -292,7 +298,9 @@ def routes_by_departure_hour():
 
 @charts_bp.route('/avg_packages', methods=['GET']) 
 def avg_packages(): 
-    try:
+    def format_decimal(value):
+            return f"{value:.2f}"
+    try:        
         city = request.args.get('city')
         city_station_code = {
             'Austin': 'DAU%',
@@ -302,33 +310,59 @@ def avg_packages():
             'Seattle': 'DSE%'
         }
 
-        subquery = db.session.query(
-            Package.route_id,
-            func.count(Package.package_id).label('package_count')
-        ).group_by(Package.route_id).subquery()
-
-        alias_subquery = aliased(subquery)
-
         if city and city in city_station_code:
-            base_query = db.session.query(
-                func.avg(alias_subquery.c.package_count).label('AvgPackagesPerRoute')
-            ).select_from(Route).join(
-                alias_subquery, alias_subquery.c.route_id == Route.route_id
-            ).filter(Route.station_code.like(city_station_code[city]))
+            result = db.session.query(
+                AvgPackagesPerCity.avg_packages_per_route
+            ).filter(AvgPackagesPerCity.city == city).scalar()
+            
+            response = {city: format_decimal(result)}
         else:
-            base_query = db.session.query(
-                func.avg(alias_subquery.c.package_count).label('AvgPackagesPerRoute')
-            ).select_from(Route).join(
-                alias_subquery, alias_subquery.c.route_id == Route.route_id
-            )
-
-        result = base_query.scalar()
-
-        if city and city in city_station_code:
-            response = {city: result}
-        else:
-            response = {"Todas las ciudades": result}
-
+            overall_avg = db.session.query(
+                AvgPackagesPerCity.avg_packages_per_route
+            ).filter(AvgPackagesPerCity.city == "General").scalar()
+            
+            response = {"Todas las ciudades": format_decimal(overall_avg)}
+        
         return jsonify({"data": response}), 200
     except Exception as e:
+        return jsonify({"message": "Internal Server Error"}), 500
+    
+@charts_bp.route('/busiest_day', methods=['GET']) 
+def busiest_day(): 
+    try:        
+        city = request.args.get('city')
+        city_station_code = {
+            'Austin': 'DAU%',
+            'Boston': 'DBO%',
+            'Los Angeles': 'DLA%',
+            'Chicago': 'DCH%',
+            'Seattle': 'DSE%'
+        }
+
+        if city and city in city_station_code:
+            result = db.session.query(
+                Route.date.label('Date'),
+                func.count(Route.route_id).label('NumberOfRoutes')
+            ).filter(Route.station_code.like(city_station_code[city])).group_by(Route.date).order_by(func.count(Route.route_id).desc()).limit(1).first()
+            
+            response = {
+                "Ciudad": city,
+                "Fecha": result.Date.strftime("%Y-%m-%d") if result else None,
+                "Número de rutas": result.NumberOfRoutes if result else 0
+            }
+        else:
+            result = db.session.query(
+                Route.date.label('Date'),
+                func.count(Route.route_id).label('NumberOfRoutes')
+            ).group_by(Route.date).order_by(func.count(Route.route_id).desc()).limit(1).first()
+            
+            response = {
+                "Ciudad": "Todas las ciudades",
+                "Fecha": result.Date.strftime("%Y-%m-%d") if result else None,
+                "Número de rutas": result.NumberOfRoutes if result else 0
+            }
+        
+        return jsonify({"data": response}), 200
+    except Exception as e:
+        print(f"Error: {e}")
         return jsonify({"message": "Internal Server Error"}), 500

@@ -64,8 +64,8 @@ def processActualSequence(cursor, file_path):
         i = 1
         for stop_tuple in actual.items():
             stop_id = stop_tuple[0]
-            time_to_next = stop_tuple[1]
-            query = f"UPDATE Stop SET OrderPosition = {i}, TimeToNext = {time_to_next} WHERE RouteId = '{route_id}' AND StopId = '{stop_id}';"
+            order_position = stop_tuple[1]
+            query = f"UPDATE Stop SET OrderPosition = {order_position} WHERE RouteId = '{route_id}' AND StopId = '{stop_id}';"
             cursor.execute(query)
             i += 1
 

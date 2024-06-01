@@ -37,10 +37,11 @@ export async function getLikedCharts() {
   }
 }
 
-export async function removeLikeChart(chartId) {
+export async function removeLikeChart(chartId, city) {
   try {
     const response = await axiosInstance.delete(
-      `${process.env.NEXT_PUBLIC_API_URL}/liked_charts/${chartId}`
+      `${process.env.NEXT_PUBLIC_API_URL}/liked_charts/${chartId}`,
+      { data: { city: city } }
     );
     return response.data;
   } catch (error) {
