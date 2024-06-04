@@ -23,7 +23,7 @@ export default function Home() {
       <h2 className="font-semibold text-sky-800 text-2xl">Inicia sesión</h2>
       <h3 className="font-normal text-center text-sky-800 text-base">
         Para poder ver tus gráficas favoritas, guardar tu historial de búsqueda
-        y descargar datos en formato CSV.
+        y descargar los datos en formato CSV.
       </h3>
       <button
         onClick={() => signIn()}
