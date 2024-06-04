@@ -1,4 +1,9 @@
-export default function NumberInput({ inputs, field, placeHolder, handleChange }) {
+export default function NumberInput({
+  inputs,
+  field,
+  placeHolder,
+  handleChange,
+}) {
   return (
     <input
       type="number"

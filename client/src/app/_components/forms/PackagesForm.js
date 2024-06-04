@@ -130,6 +130,7 @@ export default function PackagesForm({
         <select
           name="state"
           className="p-2 rounded-md bg-slate-50 text-slate-400 outline-none"
+          style={{ "-webkit-appearance": "none" }}
           onChange={handleSelectChange}
         >
           <option value="">Añadir estado</option>

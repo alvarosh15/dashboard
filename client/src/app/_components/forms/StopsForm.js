@@ -132,6 +132,7 @@ export default function StopsForm({
         <select
           name="type"
           className="p-2 rounded-md bg-slate-50 text-slate-400 outline-none"
+          style={{ "-webkit-appearance": "none" }}
           onChange={handleSelectChange}
         >
           <option value="">Añadir tipo</option>

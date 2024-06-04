@@ -38,6 +38,7 @@ export default function ButtonsForm({ clearInputs, setInputs, inputs, type }) {
         value={inputs.limit}
         onChange={handleLimitChange}
         className="bg-sky-100 text-sky-800 rounded-md p-2 outline-none"
+        style={{ "-webkit-appearance": "none" }}
       >
         <option value="5">5</option>
         <option value="10">10</option>

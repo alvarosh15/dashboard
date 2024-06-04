@@ -103,6 +103,7 @@ export default function RoutesForm({
         <select
           name="score"
           className="p-2 rounded-md bg-slate-50 text-slate-400 outline-none"
+          style={{ "-webkit-appearance": "none" }}
           onChange={handleSelectChange}
         >
           <option value="">Añadir puntación</option>
@@ -117,6 +118,7 @@ export default function RoutesForm({
         <select
           name="city"
           className="p-2 rounded-md bg-slate-50 text-slate-400 outline-none"
+          style={{ "-webkit-appearance": "none" }}
           onChange={handleSelectChange}
         >
           <option value="">Añadir ciudad</option>
@@ -137,6 +139,7 @@ export default function RoutesForm({
         <select
           name="station"
           className="p-2 rounded-md bg-slate-50 text-slate-400 outline-none"
+          style={{ "-webkit-appearance": "none" }}
           onChange={handleSelectChange}
         >
           <option value="">Añadir estación</option>
