@@ -16,7 +16,7 @@ export async function numberOfRoutesByScore(city) {
   if (city) {
     url += `city=${city}`;
   }
-  const res = await fetch(url, { cache: "no-store" });
+  const res = await fetch(url);
   const data = await res.json().then((json) => json.data);
 
   let labels = Object.keys(data);
@@ -33,7 +33,7 @@ export async function numberOfRoutesByDay(city) {
   if (city) {
     url += `city=${city}`;
   }
-  const res = await fetch(url, { cache: "no-store" });
+  const res = await fetch(url);
   const data = await res.json().then((json) => json.data);
   const x = Object.keys(data);
   const y = x.map((date) => data[date]);
@@ -46,7 +46,7 @@ export async function numberOfRoutesByMonth(city) {
   if (city) {
     url += `city=${city}`;
   }
-  const res = await fetch(url, { cache: "no-store" });
+  const res = await fetch(url);
   const data = await res.json().then((json) => json.data);
   const x = Object.keys(data);
   const y = x.map((date) => data[date]);
@@ -59,7 +59,7 @@ export async function numberOfPackagesByStatus(city) {
   if (city) {
     url += `city=${city}`;
   }
-  const res = await fetch(url, { cache: "no-store" });
+  const res = await fetch(url);
   const data = await res.json().then((json) => json.data);
 
   let labels = Object.keys(data);
@@ -76,7 +76,7 @@ export async function numberOfRoutesByCapacity(city) {
   if (city) {
     url += `city=${city}`;
   }
-  const res = await fetch(url, { cache: "no-store" });
+  const res = await fetch(url);
   const data = await res.json().then((json) => json.data);
   const x = Object.keys(data);
   const y = x.map((date) => data[date]);
@@ -86,7 +86,7 @@ export async function numberOfRoutesByCapacity(city) {
 
 export async function numberOfRoutesByCity() {
   const url = `${process.env.NEXT_PUBLIC_API_URL}/routes_by_city`;
-  const res = await fetch(url, { cache: "no-store" });
+  const res = await fetch(url);
   const data = await res.json().then((json) => json.data);
 
   const x = Object.keys(data);
@@ -101,7 +101,7 @@ export async function routesByDepartureHour(city) {
   if (city) {
     url += `city=${city}`;
   }
-  const res = await fetch(url, { cache: "no-store" });
+  const res = await fetch(url);
   const data = await res.json().then((json) => json.data);
 
   const x = Object.keys(data).map(Number);
@@ -116,7 +116,7 @@ export async function avgPackagePerRoute(city) {
   if (city) {
     url += `city=${city}`;
   }
-  const res = await fetch(url, { cache: "no-store" });
+  const res = await fetch(url);
   const data = await res.json().then((json) => json.data);
 
   return data;
@@ -127,7 +127,7 @@ export async function busiestDay(city) {
   if (city) {
     url += `city=${city}`;
   }
-  const res = await fetch(url, { cache: "no-store" });
+  const res = await fetch(url);
   const data = await res.json().then((json) => json.data);
 
   return data;

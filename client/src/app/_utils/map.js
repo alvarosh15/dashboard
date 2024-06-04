@@ -9,8 +9,7 @@ function translateType(type) {
 
 export async function getLocAndLatFromId(id) {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/route/stops/coordinates?id=${id}`,
-    { cache: "no-store" }
+    `${process.env.NEXT_PUBLIC_API_URL}/route/stops/coordinates?id=${id}`
   );
   const data = await response.json().then((json) => json.data);
 
