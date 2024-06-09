@@ -162,6 +162,12 @@ try:
 
     cursor = conn.cursor()
 
+    cursor.execute("INSERT INTO Score (score_name) VALUES ('Low'), ('Medium'), ('High');")
+    cursor.execute("INSERT INTO Status (status_name) VALUES ('DELIVERED'), ('DELIVERY_ATTEMPTED'), ('REJECTED');")
+    cursor.execute("INSERT INTO Type (type_name) VALUES ('Station'), ('Dropoff');")
+
+    conn.commit()
+
     print("Procesando el archivo route_data.json...")
     processRouteData(cursor, training_route_data_file_path)
     conn.commit()
