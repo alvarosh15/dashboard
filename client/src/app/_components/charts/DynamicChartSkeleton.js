@@ -43,13 +43,13 @@ export default function DynamicChartSkeleton({ size, type }) {
             width="80%"
             height="80%"
             viewBox="0 0 100 100"
-            className="bg-gray-100"
+            className="bg-slate-100"
           >
             <polyline
               points="10,90 30,40 50,20 70,60 90,10"
               className="stroke-current text-gray-300"
               fill="none"
-              strokeWidth="2"
+              strokeWidth="4"
             />
           </svg>
         ) : (

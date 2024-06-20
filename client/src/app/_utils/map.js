@@ -4,7 +4,10 @@ function translateType(type) {
     Dropoff: "Entrega",
   };
 
-  return translationMap[type] || type;
+  const [prefix, name] = type.split(" - ");
+  const translatedName = translationMap[name] || name;
+
+  return `${prefix} - ${translatedName}`;
 }
 
 export async function getLocAndLatFromId(id) {

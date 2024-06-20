@@ -20,8 +20,9 @@ def get_stops_coordinates():
         coordinates = {
             "lat": [stop.latitude for stop in stops],
             "lon": [stop.longitude for stop in stops],
-            "type": [type_dict.get(stop.type_id) for stop in stops]
+            "type": [f"{stop.order_position} - {type_dict.get(stop.type_id)}" for stop in stops]
         }
+
         return jsonify({"data": coordinates}), 200
     except Exception as e:
         return jsonify({"message": "Internal Server Error"}), 500
